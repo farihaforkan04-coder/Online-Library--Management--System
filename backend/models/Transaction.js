@@ -1,20 +1,16 @@
-const mongoose = require("mongoose");
+ const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema(
   {
     book: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Book",
+      ref: 'Book',
       required: true,
     },
     member: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
-    },
-    issueDate: {
-      type: Date,
-      default: Date.now,
     },
     dueDate: {
       type: Date,
@@ -22,6 +18,7 @@ const transactionSchema = new mongoose.Schema(
     },
     returnDate: {
       type: Date,
+      default: null,
     },
     fine: {
       type: Number,
@@ -29,11 +26,11 @@ const transactionSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["issued", "returned", "overdue"],
-      default: "issued",
+      enum: ['issued', 'returned'],
+      default: 'issued',
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Transaction", transactionSchema);
+module.exports = mongoose.model('Transaction', transactionSchema);

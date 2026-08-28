@@ -1,6 +1,7 @@
 const Transaction = require("../models/Transaction");
 const Book = require("../models/Book");
 const User = require("../models/User");
+const calculateFine = require('../utils/calculateFine');
 
 const issueBook = async (req, res) => {
   try {
@@ -55,13 +56,7 @@ const returnBook = async (req, res) => {
     }
 
     const returnDate = new Date();
-    let fine = 0;
-
-    if (returnDate > transaction.dueDate) {
-      const diffTime = Math.abs(returnDate - transaction.dueDate);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      fine = diffDays * 10; // 10 taka per day
-    }
+       const fine = calculateFine(transaction.dueDate, returnDate);
 
     transaction.returnDate = returnDate;
     transaction.fine = fine;
