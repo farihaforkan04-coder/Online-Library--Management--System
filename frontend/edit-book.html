@@ -43,15 +43,15 @@
                     Add Book
                 </a>
 
-                <span id="userRole"
-                      class="text-gray-700 font-medium">
-                    Admin
-                </span>
+                <span class="text-gray-700 font-medium">
+    Welcome, <strong data-user-name></strong>
+</span>
 
-                <button onclick="logout()"
-                        class="text-red-600 hover:text-red-700 font-medium">
-                    Logout
-                </button>
+<button type="button"
+        data-logout
+        class="text-red-600 hover:text-red-700 font-medium">
+    Logout
+</button>
 
             </div>
 
@@ -417,6 +417,6 @@ if (bookIndex === -1) {
 }
 
 </script>
-
+<script src="js/auth.js"></script>
 </body>
 </html>
