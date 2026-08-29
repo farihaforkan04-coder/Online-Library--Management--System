@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Online Library</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
+
+
+    <div class="w-full max-w-md">
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+
+
+            <!-- LOGO -->
+
+            <div class="text-center mb-8">
+
+                <div class="text-5xl mb-3">
+                    📚
+                </div>
+
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                    Online Library
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    Login to your account
+                </p>
+
+            </div>
+
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="message"
+                class="hidden mb-5 rounded-lg border px-4 py-3 text-sm">
+            </div>
+
+
+
+            <!-- LOGIN FORM -->
+
+            <form id="loginForm">
+
+
+                <!-- EMAIL -->
+
+                <div class="mb-5">
+
+                    <label
+                        for="email"
+                        class="block text-sm font-medium text-gray-700 mb-2">
+
+                        Email
+
+                    </label>
+
+
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                        class="w-full border border-gray-300
+                               rounded-lg px-4 py-3
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500">
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="mb-6">
+
+                    <label
+                        for="password"
+                        class="block text-sm font-medium text-gray-700 mb-2">
+
+                        Password
+
+                    </label>
+
+
+                    <div class="relative">
+
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                            class="w-full border border-gray-300
+                                   rounded-lg px-4 py-3 pr-16
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500">
+
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="absolute right-3
+                                   top-1/2
+                                   -translate-y-1/2
+                                   text-blue-600
+                                   hover:text-blue-700
+                                   text-sm
+                                   font-medium">
+
+                            Show
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600
+                           hover:bg-blue-700
+                           text-white
+                           font-semibold
+                           rounded-lg
+                           px-5 py-3">
+
+                    Login
+
+                </button>
+
+
+            </form>
+
+
+
+            <!-- DEMO ACCOUNT -->
+
+            <div
+                class="mt-6 rounded-lg
+                       bg-gray-50
+                       border border-gray-200
+                       p-4">
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">
+                    Demo Accounts
+                </p>
+
+                <p class="text-sm text-gray-600">
+                    Admin: admin@gmail.com
+                </p>
+
+                <p class="text-sm text-gray-600">
+                    Member: member@gmail.com
+                </p>
+
+                <p class="text-xs text-gray-400 mt-2">
+                    Passwords are hidden.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- AUTH.JS -->
+
+    <script src="js/auth.js"></script>
+
+
+    <script>
+
+
+        // ================================
+        // ELEMENTS
+        // ================================
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+
+        const emailInput =
+            document.getElementById("email");
+
+
+        const passwordInput =
+            document.getElementById("password");
+
+
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+
+        const message =
+            document.getElementById("message");
+
+
+
+        // ================================
+        // SHOW MESSAGE
+        // ================================
+
+        function showMessage(text, type) {
+
+            message.textContent = text;
+
+
+            message.className =
+                "mb-5 rounded-lg border px-4 py-3 text-sm";
+
+
+            if (type === "success") {
+
+                message.classList.add(
+                    "bg-green-100",
+                    "text-green-700",
+                    "border-green-300"
+                );
+
+            } else {
+
+                message.classList.add(
+                    "bg-red-100",
+                    "text-red-700",
+                    "border-red-300"
+                );
+
+            }
+
+        }
+
+
+
+        // ================================
+        // SHOW / HIDE PASSWORD
+        // ================================
+
+        togglePassword.addEventListener(
+            "click",
+            function() {
+
+                if (passwordInput.type === "password") {
+
+                    passwordInput.type = "text";
+
+                    togglePassword.textContent = "Hide";
+
+                } else {
+
+                    passwordInput.type = "password";
+
+                    togglePassword.textContent = "Show";
+
+                }
+
+            }
+        );
+
+
+
+        // ================================
+        // LOGIN
+        // ================================
+
+        loginForm.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const email =
+                    emailInput.value
+                        .trim()
+                        .toLowerCase();
+
+
+                const password =
+                    passwordInput.value;
+
+
+                if (!email) {
+
+                    showMessage(
+                        "Please enter your email.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!password) {
+
+                    showMessage(
+                        "Please enter your password.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const success =
+                    login(
+                        email,
+                        password
+                    );
+
+
+                if (!success) {
+
+                    showMessage(
+                        "Invalid email or password.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                showMessage(
+                    "Login successful! Redirecting...",
+                    "success"
+                );
+
+
+                setTimeout(
+                    function() {
+
+                        window.location.href =
+                            "index.html";
+
+                    },
+                    500
+                );
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>

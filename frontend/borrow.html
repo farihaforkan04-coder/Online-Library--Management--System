@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Borrow Book - Online Library</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<nav class="bg-white shadow-md">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+
+        <div class="flex flex-col sm:flex-row
+                    items-center justify-between gap-4">
+
+            <a href="index.html"
+               class="flex items-center gap-2">
+
+                <span class="text-2xl">📚</span>
+
+                <h1 class="text-xl font-bold text-gray-800">
+                    Online Library
+                </h1>
+
+            </a>
+
+            <div class="flex flex-wrap
+                        justify-center
+                        items-center
+                        gap-4 sm:gap-6">
+
+                <a href="index.html"
+                   class="text-gray-600 hover:text-blue-600">
+                    Dashboard
+                </a>
+
+                <a href="books.html"
+                   class="text-gray-600 hover:text-blue-600">
+                    Books
+                </a>
+
+                <a href="borrow.html"
+                   class="text-blue-600 font-semibold">
+                    Borrow
+                </a>
+
+                <a href="return-book.html"
+                   class="text-gray-600 hover:text-blue-600">
+                    Return
+                </a>
+
+                <a href="borrow-history.html"
+                   class="text-gray-600 hover:text-blue-600">
+                    History
+                </a>
+
+                <span id="userRole"
+                      class="text-gray-700 font-medium">
+                    User
+                </span>
+
+                <button type="button"
+                        onclick="logout()"
+                        class="text-red-600 hover:text-red-700 font-medium">
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<main class="max-w-5xl mx-auto
+             px-4 sm:px-6
+             py-8 sm:py-10">
+
+    <div class="mb-8">
+
+        <h2 class="text-2xl sm:text-3xl
+                   font-bold text-gray-800">
+
+            Borrow Book
+
+        </h2>
+
+        <p class="mt-2 text-gray-600">
+
+            Select an available book to borrow.
+
+        </p>
+
+    </div>
+
+
+    <div id="message"
+         class="hidden mb-6 rounded-lg
+                border px-4 py-3">
+    </div>
+
+
+    <div id="booksList"
+         class="space-y-4">
+    </div>
+
+</main>
+
+
+<script src="js/auth.js"></script>
+
+<script>
+
+    // ================================
+    // PROTECT
+    // ================================
+
+    if (!protectPage()) {
+
+        throw new Error("Not logged in");
+
+    }
+
+
+    showUserInfo("userRole");
+
+
+    const currentUser =
+        getCurrentUser();
+
+
+    let books =
+        JSON.parse(
+            localStorage.getItem("books")
+        ) || [];
+
+
+    const message =
+        document.getElementById("message");
+
+
+    // ================================
+    // MESSAGE
+    // ================================
+
+    function showMessage(text, type) {
+
+        message.textContent = text;
+
+        message.classList.remove(
+            "hidden",
+            "bg-green-100",
+            "text-green-700",
+            "border-green-300",
+            "bg-red-100",
+            "text-red-700",
+            "border-red-300"
+        );
+
+
+        if (type === "success") {
+
+            message.classList.add(
+                "bg-green-100",
+                "text-green-700",
+                "border-green-300"
+            );
+
+        } else {
+
+            message.classList.add(
+                "bg-red-100",
+                "text-red-700",
+                "border-red-300"
+            );
+
+        }
+
+    }
+
+
+    // ================================
+    // DISPLAY BOOKS
+    // ================================
+
+    function displayBooks() {
+
+        const list =
+            document.getElementById(
+                "booksList"
+            );
+
+
+        list.innerHTML = "";
+
+
+        if (books.length === 0) {
+
+            list.innerHTML = `
+
+                <div class="bg-white rounded-xl
+                            shadow-md p-8
+                            text-center text-gray-500">
+
+                    No books available.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        books.forEach(function(book) {
+
+            const quantity =
+                Number(book.quantity) || 0;
+
+
+            const available =
+                quantity > 0;
+
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "bg-white rounded-xl shadow-md p-5 sm:p-6";
+
+
+            card.innerHTML = `
+
+                <div class="flex flex-col
+                            sm:flex-row
+                            sm:items-center
+                            sm:justify-between
+                            gap-5">
+
+                    <div>
+
+                        <h3 class="text-xl font-bold
+                                   text-gray-800">
+
+                            ${escapeHTML(
+                                book.title || ""
+                            )}
+
+                        </h3>
+
+
+                        <p class="text-gray-500 mt-1">
+
+                            Author:
+                            ${escapeHTML(
+                                book.author || "-"
+                            )}
+
+                        </p>
+
+
+                        <p class="text-gray-500 mt-1">
+
+                            Category:
+                            ${escapeHTML(
+                                book.category || "-"
+                            )}
+
+                        </p>
+
+
+                        <p class="text-gray-500 mt-1">
+
+                            Available Quantity:
+                            ${quantity}
+
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        ${
+                            available
+
+                            ? `
+
+                                <button
+                                    type="button"
+                                    onclick="borrowBook(${Number(book.id)})"
+                                    class="w-full sm:w-auto
+                                           bg-blue-600
+                                           text-white
+                                           px-6 py-3
+                                           rounded-lg
+                                           font-medium
+                                           hover:bg-blue-700">
+
+                                    Borrow
+
+                                </button>
+
+                            `
+
+                            : `
+
+                                <span
+                                    class="inline-block
+                                           bg-red-100
+                                           text-red-700
+                                           px-4 py-2
+                                           rounded-lg
+                                           font-medium">
+
+                                    Not Available
+
+                                </span>
+
+                            `
+                        }
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(card);
+
+        });
+
+    }
+
+
+    // ================================
+    // BORROW BOOK
+    // ================================
+
+    function borrowBook(bookId) {
+
+        if (!currentUser) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        let currentBooks =
+            JSON.parse(
+                localStorage.getItem("books")
+            ) || [];
+
+
+        const book =
+            currentBooks.find(function(item) {
+
+                return Number(item.id) ===
+                       Number(bookId);
+
+            });
+
+
+        if (!book) {
+
+            showMessage(
+                "Book not found.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const quantity =
+            Number(book.quantity) || 0;
+
+
+        if (quantity <= 0) {
+
+            showMessage(
+                "This book is not available.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        // ================================
+        // GET BORROW RECORDS
+        // ================================
+
+        let borrowedBooks =
+            JSON.parse(
+                localStorage.getItem(
+                    "borrowedBooks"
+                )
+            ) || [];
+
+
+        // Prevent duplicate active borrow
+
+        const alreadyBorrowed =
+            borrowedBooks.some(function(record) {
+
+                return (
+                    record.userEmail ===
+                    currentUser.email &&
+
+                    Number(record.bookId) ===
+                    Number(book.id) &&
+
+                    record.returned === false
+                );
+
+            });
+
+
+        if (alreadyBorrowed) {
+
+            showMessage(
+                "You already borrowed this book.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        // ================================
+        // DATES
+        // ================================
+
+        const borrowedDate =
+            new Date();
+
+
+        const dueDate =
+            new Date(
+                borrowedDate
+            );
+
+
+        // 7 days
+
+        dueDate.setDate(
+            dueDate.getDate() + 7
+        );
+
+
+        // ================================
+        // REDUCE QUANTITY
+        // ================================
+
+        book.quantity =
+            quantity - 1;
+
+
+        localStorage.setItem(
+            "books",
+            JSON.stringify(
+                currentBooks
+            )
+        );
+
+
+        // ================================
+        // CREATE RECORD
+        // ================================
+
+        const borrowRecord = {
+
+            id: Date.now(),
+
+            bookId: book.id,
+
+            bookTitle: book.title,
+
+            userEmail:
+                currentUser.email,
+
+            borrowedAt:
+                borrowedDate.toLocaleString(),
+
+            borrowedTimestamp:
+                borrowedDate.getTime(),
+
+            dueDate:
+                dueDate.toLocaleString(),
+
+            dueTimestamp:
+                dueDate.getTime(),
+
+            returned: false,
+
+            returnedAt: null,
+
+            fine: 0,
+
+            lateDays: 0
+
+        };
+
+
+        borrowedBooks.push(
+            borrowRecord
+        );
+
+
+        localStorage.setItem(
+            "borrowedBooks",
+            JSON.stringify(
+                borrowedBooks
+            )
+        );
+
+
+        showMessage(
+            "Book borrowed successfully! Return within 7 days to avoid a fine.",
+            "success"
+        );
+
+
+        books = currentBooks;
+
+        displayBooks();
+
+    }
+
+
+    // ================================
+    // ESCAPE HTML
+    // ================================
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    // ================================
+    // INITIAL
+    // ================================
+
+    displayBooks();
+
+</script>
+
+</body>
+
+</html>
