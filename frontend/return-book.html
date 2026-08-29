@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Return Book - Online Library</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <nav class="bg-white shadow-md">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+
+            <div class="flex flex-col sm:flex-row
+                        items-center justify-between gap-4">
+
+
+                <a
+                    href="index.html"
+                    class="flex items-center gap-2">
+
+                    <span class="text-2xl">
+                        📚
+                    </span>
+
+                    <h1 class="text-xl font-bold text-gray-800">
+                        Online Library
+                    </h1>
+
+                </a>
+
+
+                <div class="flex flex-wrap
+                            justify-center
+                            items-center
+                            gap-4 sm:gap-6">
+
+
+                    <a
+                        href="index.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Dashboard
+
+                    </a>
+
+
+                    <a
+                        href="books.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Books
+
+                    </a>
+
+
+                    <a
+                        href="borrow.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Borrow
+
+                    </a>
+
+
+                    <a
+                        href="return-book.html"
+                        class="text-blue-600 font-semibold">
+
+                        Return
+
+                    </a>
+
+
+                    <a
+                        href="borrow-history.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        History
+
+                    </a>
+
+
+                    <span
+                        id="userRole"
+                        class="text-gray-700 font-medium">
+
+                        User
+
+                    </span>
+
+
+                    <button
+                        type="button"
+                        onclick="logout()"
+                        class="text-red-600 hover:text-red-700 font-medium">
+
+                        Logout
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ================================
+         MAIN
+    ================================= -->
+
+    <main
+        class="max-w-4xl mx-auto
+               px-4 sm:px-6
+               py-8 sm:py-10">
+
+
+        <div class="mb-8">
+
+            <h2
+                class="text-2xl sm:text-3xl
+                       font-bold text-gray-800">
+
+                Return Book
+
+            </h2>
+
+
+            <p class="mt-2 text-gray-600">
+
+                Return your borrowed books and check any late fine.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="message"
+            class="hidden mb-6 rounded-lg
+                   border px-4 py-3">
+
+        </div>
+
+
+
+        <!-- BOOKS -->
+
+        <div
+            id="borrowedBooksList"
+            class="space-y-4">
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- AUTH -->
+
+    <script src="js/auth.js"></script>
+
+
+    <script>
+
+        // ================================
+        // PROTECT PAGE
+        // ================================
+
+        if (!protectPage()) {
+
+            throw new Error("Not logged in");
+
+        }
+
+
+        showUserInfo("userRole");
+
+
+        const currentUser =
+            getCurrentUser();
+
+
+        // ================================
+        // FINE SETTINGS
+        // ================================
+
+        const FINE_PER_DAY = 10;
+
+
+
+        // ================================
+        // MESSAGE
+        // ================================
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        function showMessage(text, type) {
+
+            message.textContent = text;
+
+
+            message.classList.remove(
+                "hidden",
+                "bg-green-100",
+                "text-green-700",
+                "border-green-300",
+                "bg-red-100",
+                "text-red-700",
+                "border-red-300"
+            );
+
+
+            if (type === "success") {
+
+                message.classList.add(
+                    "bg-green-100",
+                    "text-green-700",
+                    "border-green-300"
+                );
+
+            } else {
+
+                message.classList.add(
+                    "bg-red-100",
+                    "text-red-700",
+                    "border-red-300"
+                );
+
+            }
+
+        }
+
+
+
+        // ================================
+        // CALCULATE LATE
+        // ================================
+
+        function calculateLate(record) {
+
+            let dueTime =
+                Number(record.dueTimestamp);
+
+
+            // Old records without timestamp
+
+            if (!dueTime && record.dueDate) {
+
+                const parsed =
+                    new Date(record.dueDate);
+
+                if (!isNaN(parsed.getTime())) {
+
+                    dueTime =
+                        parsed.getTime();
+
+                }
+
+            }
+
+
+            if (!dueTime) {
+
+                return {
+                    lateDays: 0,
+                    fine: 0
+                };
+
+            }
+
+
+            const now =
+                new Date();
+
+
+            const dueDate =
+                new Date(dueTime);
+
+
+            if (now <= dueDate) {
+
+                return {
+                    lateDays: 0,
+                    fine: 0
+                };
+
+            }
+
+
+            const difference =
+                now.getTime() -
+                dueDate.getTime();
+
+
+            const lateDays =
+                Math.ceil(
+                    difference /
+                    (1000 * 60 * 60 * 24)
+                );
+
+
+            const fine =
+                lateDays *
+                FINE_PER_DAY;
+
+
+            return {
+                lateDays: lateDays,
+                fine: fine
+            };
+
+        }
+
+
+
+        // ================================
+        // DISPLAY BOOKS
+        // ================================
+
+        function displayBorrowedBooks() {
+
+            const list =
+                document.getElementById(
+                    "borrowedBooksList"
+                );
+
+
+            list.innerHTML = "";
+
+
+            if (!currentUser) {
+
+                return;
+
+            }
+
+
+            const borrowedBooks =
+                JSON.parse(
+                    localStorage.getItem(
+                        "borrowedBooks"
+                    )
+                ) || [];
+
+
+            const myBooks =
+                borrowedBooks.filter(
+                    function(record) {
+
+                        return (
+                            record.userEmail ===
+                            currentUser.email &&
+
+                            record.returned === false
+                        );
+
+                    }
+                );
+
+
+            if (myBooks.length === 0) {
+
+                list.innerHTML = `
+
+                    <div
+                        class="bg-white rounded-xl
+                               shadow-md p-8
+                               text-center">
+
+                        <p class="text-gray-500">
+
+                            You have no borrowed books.
+
+                        </p>
+
+
+                        <a
+                            href="borrow.html"
+                            class="inline-block
+                                   mt-4
+                                   bg-blue-600
+                                   text-white
+                                   px-5 py-3
+                                   rounded-lg
+                                   font-medium
+                                   hover:bg-blue-700">
+
+                            Browse Books
+
+                        </a>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+
+            myBooks.forEach(
+                function(record) {
+
+                    const late =
+                        calculateLate(record);
+
+
+                    const isLate =
+                        late.lateDays > 0;
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "bg-white rounded-xl shadow-md p-5 sm:p-6";
+
+
+                    card.innerHTML = `
+
+                        <div
+                            class="flex flex-col gap-5">
+
+
+                            <!-- BOOK INFO -->
+
+                            <div>
+
+                                <h3
+                                    class="text-xl
+                                           font-bold
+                                           text-gray-800">
+
+                                    ${escapeHTML(
+                                        record.bookTitle || ""
+                                    )}
+
+                                </h3>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-2">
+
+                                    Borrowed:
+                                    ${escapeHTML(
+                                        record.borrowedAt || "-"
+                                    )}
+
+                                </p>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1">
+
+                                    Due:
+                                    ${escapeHTML(
+                                        record.dueDate || "-"
+                                    )}
+
+                                </p>
+
+                            </div>
+
+
+
+                            <!-- FINE -->
+
+                            <div
+                                class="rounded-lg
+                                       p-4
+                                       ${
+                                           isLate
+                                           ? "bg-red-50"
+                                           : "bg-green-50"
+                                       }">
+
+
+                                ${
+                                    isLate
+
+                                    ? `
+
+                                        <p
+                                            class="text-red-700
+                                                   font-semibold">
+
+                                            ⚠️ Late Return
+
+                                        </p>
+
+
+                                        <p
+                                            class="text-red-600
+                                                   mt-1">
+
+                                            Late by:
+                                            ${late.lateDays}
+                                            day(s)
+
+                                        </p>
+
+
+                                        <p
+                                            class="text-red-700
+                                                   font-bold
+                                                   text-lg
+                                                   mt-1">
+
+                                            Fine:
+                                            ৳${late.fine}
+
+                                        </p>
+
+                                    `
+
+                                    : `
+
+                                        <p
+                                            class="text-green-700
+                                                   font-semibold">
+
+                                            ✓ No Fine
+
+                                        </p>
+
+
+                                        <p
+                                            class="text-green-600
+                                                   mt-1">
+
+                                            Return before the due date
+                                            to avoid a fine.
+
+                                        </p>
+
+                                    `
+
+                                }
+
+                            </div>
+
+
+
+                            <!-- RETURN -->
+
+                            <div>
+
+                                <button
+                                    type="button"
+                                    onclick="returnBook(${Number(record.id)})"
+                                    class="w-full
+                                           bg-green-600
+                                           text-white
+                                           px-6 py-3
+                                           rounded-lg
+                                           font-medium
+                                           hover:bg-green-700">
+
+                                    Return Book
+
+                                </button>
+
+                            </div>
+
+
+                        </div>
+
+                    `;
+
+
+                    list.appendChild(card);
+
+                }
+            );
+
+        }
+
+
+
+        // ================================
+        // RETURN BOOK
+        // ================================
+
+        function returnBook(recordId) {
+
+            let borrowedBooks =
+                JSON.parse(
+                    localStorage.getItem(
+                        "borrowedBooks"
+                    )
+                ) || [];
+
+
+            const recordIndex =
+                borrowedBooks.findIndex(
+                    function(record) {
+
+                        return Number(record.id) ===
+                               Number(recordId);
+
+                    }
+                );
+
+
+            if (recordIndex === -1) {
+
+                showMessage(
+                    "Borrow record not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const record =
+                borrowedBooks[recordIndex];
+
+
+            // Security
+
+            if (
+                !currentUser ||
+                record.userEmail !==
+                currentUser.email
+            ) {
+
+                showMessage(
+                    "You cannot return this book.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (record.returned === true) {
+
+                showMessage(
+                    "This book has already been returned.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            // ================================
+            // CALCULATE FINAL FINE
+            // ================================
+
+            const late =
+                calculateLate(record);
+
+
+            const fine =
+                late.fine;
+
+
+            const lateDays =
+                late.lateDays;
+
+
+            let confirmText =
+                "Are you sure you want to return \"" +
+                record.bookTitle +
+                "\"?";
+
+
+            if (fine > 0) {
+
+                confirmText +=
+                    "\n\nLate by: " +
+                    lateDays +
+                    " day(s)" +
+                    "\nFine: ৳" +
+                    fine;
+
+            } else {
+
+                confirmText +=
+                    "\n\nFine: ৳0";
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    confirmText
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+
+            // ================================
+            // GET BOOKS
+            // ================================
+
+            let books =
+                JSON.parse(
+                    localStorage.getItem(
+                        "books"
+                    )
+                ) || [];
+
+
+            const book =
+                books.find(
+                    function(item) {
+
+                        return Number(item.id) ===
+                               Number(record.bookId);
+
+                    }
+                );
+
+
+            if (!book) {
+
+                showMessage(
+                    "Original book could not be found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            // ================================
+            // RESTORE QUANTITY
+            // ================================
+
+            book.quantity =
+                (Number(book.quantity) || 0) + 1;
+
+
+            localStorage.setItem(
+                "books",
+                JSON.stringify(
+                    books
+                )
+            );
+
+
+
+            // ================================
+            // UPDATE RECORD
+            // ================================
+
+            borrowedBooks[recordIndex].returned =
+                true;
+
+
+            borrowedBooks[recordIndex].returnedAt =
+                new Date().toLocaleString();
+
+
+            borrowedBooks[recordIndex].returnedTimestamp =
+                Date.now();
+
+
+            borrowedBooks[recordIndex].lateDays =
+                lateDays;
+
+
+            borrowedBooks[recordIndex].fine =
+                fine;
+
+
+            localStorage.setItem(
+                "borrowedBooks",
+                JSON.stringify(
+                    borrowedBooks
+                )
+            );
+
+
+            // ================================
+            // SUCCESS
+            // ================================
+
+            if (fine > 0) {
+
+                showMessage(
+                    "Book returned. Late by " +
+                    lateDays +
+                    " day(s). Fine: ৳" +
+                    fine,
+                    "success"
+                );
+
+            } else {
+
+                showMessage(
+                    "Book returned successfully! Fine: ৳0",
+                    "success"
+                );
+
+            }
+
+
+            displayBorrowedBooks();
+
+        }
+
+
+
+        // ================================
+        // ESCAPE HTML
+        // ================================
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+
+        // ================================
+        // INITIAL
+        // ================================
+
+        displayBorrowedBooks();
+
+    </script>
+
+
+</body>
+
+</html>

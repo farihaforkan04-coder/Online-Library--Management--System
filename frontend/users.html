@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>User Management - Online Library</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <nav class="bg-white shadow-md">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+
+            <div class="flex flex-col sm:flex-row
+                        items-center justify-between gap-4">
+
+                <a
+                    href="index.html"
+                    class="flex items-center gap-2">
+
+                    <span class="text-2xl">
+                        📚
+                    </span>
+
+                    <h1 class="text-xl font-bold text-gray-800">
+                        Online Library
+                    </h1>
+
+                </a>
+
+
+                <div class="flex flex-wrap
+                            justify-center
+                            items-center
+                            gap-4 sm:gap-6">
+
+
+                    <a
+                        href="index.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Dashboard
+
+                    </a>
+
+
+                    <a
+                        href="books.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Books
+
+                    </a>
+
+
+                    <a
+                        href="borrow.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Borrow
+
+                    </a>
+
+
+                    <a
+                        href="return-book.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Return
+
+                    </a>
+
+
+                    <a
+                        href="borrow-history.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        History
+
+                    </a>
+
+
+                    <a
+                        href="users.html"
+                        class="text-blue-600 font-semibold">
+
+                        Users
+
+                    </a>
+
+
+                    <span
+                        id="userRole"
+                        class="text-gray-700 font-medium">
+
+                        Admin
+
+                    </span>
+
+
+                    <button
+                        type="button"
+                        onclick="logout()"
+                        class="text-red-600 hover:text-red-700 font-medium">
+
+                        Logout
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ================================
+         MAIN
+    ================================= -->
+
+    <main
+        class="max-w-7xl mx-auto
+               px-4 sm:px-6
+               py-8 sm:py-10">
+
+
+        <!-- HEADING -->
+
+        <div class="mb-8">
+
+            <h2
+                class="text-2xl sm:text-3xl
+                       font-bold text-gray-800">
+
+                User Management
+
+            </h2>
+
+
+            <p class="mt-2 text-gray-600">
+
+                Add and manage library members.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- ================================
+             MESSAGE
+        ================================= -->
+
+        <div
+            id="message"
+            class="hidden mb-6 rounded-lg
+                   border px-4 py-3">
+
+        </div>
+
+
+
+        <!-- ================================
+             ADD MEMBER
+        ================================= -->
+
+        <div
+            class="bg-white rounded-xl
+                   shadow-md p-6 mb-6">
+
+
+            <h3
+                class="text-xl font-bold
+                       text-gray-800 mb-5">
+
+                Add New Member
+
+            </h3>
+
+
+            <form
+                id="userForm"
+                class="grid grid-cols-1
+                       md:grid-cols-4
+                       gap-4">
+
+
+                <!-- NAME -->
+
+                <input
+                    id="name"
+                    type="text"
+                    placeholder="Full Name"
+                    autocomplete="off"
+                    required
+                    class="border border-gray-300
+                           rounded-lg px-4 py-3
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-blue-500">
+
+
+
+                <!-- EMAIL -->
+
+                <input
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    autocomplete="off"
+                    required
+                    class="border border-gray-300
+                           rounded-lg px-4 py-3
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-blue-500">
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="relative">
+
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="Password"
+                        autocomplete="new-password"
+                        required
+                        class="w-full border border-gray-300
+                               rounded-lg px-4 py-3 pr-16
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500">
+
+
+                    <button
+                        id="passwordToggle"
+                        type="button"
+                        onclick="togglePassword()"
+                        class="absolute right-3
+                               top-1/2
+                               -translate-y-1/2
+                               text-blue-600
+                               text-sm
+                               font-medium">
+
+                        Show
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- ADD BUTTON -->
+
+                <button
+                    type="submit"
+                    class="bg-blue-600
+                           text-white
+                           rounded-lg
+                           px-5 py-3
+                           font-medium
+                           hover:bg-blue-700">
+
+                    + Add Member
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+
+
+        <!-- ================================
+             SEARCH
+        ================================= -->
+
+        <div
+            class="bg-white rounded-xl
+                   shadow-md p-5 mb-6">
+
+
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search by name or email..."
+                class="w-full border border-gray-300
+                       rounded-lg px-4 py-3
+                       focus:outline-none
+                       focus:ring-2
+                       focus:ring-blue-500">
+
+        </div>
+
+
+
+        <!-- ================================
+             USERS TABLE
+        ================================= -->
+
+        <div
+            class="bg-white rounded-xl
+                   shadow-md
+                   overflow-x-auto">
+
+
+            <table
+                class="w-full min-w-[750px]">
+
+
+                <thead
+                    class="bg-gray-50">
+
+                    <tr>
+
+                        <th
+                            class="text-left px-5 py-4
+                                   text-sm font-semibold
+                                   text-gray-600">
+
+                            Name
+
+                        </th>
+
+
+                        <th
+                            class="text-left px-5 py-4
+                                   text-sm font-semibold
+                                   text-gray-600">
+
+                            Email
+
+                        </th>
+
+
+                        <th
+                            class="text-left px-5 py-4
+                                   text-sm font-semibold
+                                   text-gray-600">
+
+                            Role
+
+                        </th>
+
+
+                        <th
+                            class="text-left px-5 py-4
+                                   text-sm font-semibold
+                                   text-gray-600">
+
+                            Actions
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="usersTable"
+                    class="divide-y divide-gray-200">
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- ================================
+         AUTH
+    ================================= -->
+
+    <script src="js/auth.js"></script>
+
+
+    <script>
+
+
+        // ================================
+        // ADMIN PROTECTION
+        // ================================
+
+        if (!protectAdminPage()) {
+
+            throw new Error(
+                "Admin access required."
+            );
+
+        }
+
+
+        showUserInfo("userRole");
+
+
+
+        // ================================
+        // ELEMENTS
+        // ================================
+
+        const userForm =
+            document.getElementById(
+                "userForm"
+            );
+
+
+        const nameInput =
+            document.getElementById(
+                "name"
+            );
+
+
+        const emailInput =
+            document.getElementById(
+                "email"
+            );
+
+
+        const passwordInput =
+            document.getElementById(
+                "password"
+            );
+
+
+        const passwordToggle =
+            document.getElementById(
+                "passwordToggle"
+            );
+
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+
+        const usersTable =
+            document.getElementById(
+                "usersTable"
+            );
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+
+        // ================================
+        // PASSWORD SHOW / HIDE
+        // ================================
+
+        function togglePassword() {
+
+            if (
+                passwordInput.type ===
+                "password"
+            ) {
+
+                passwordInput.type =
+                    "text";
+
+                passwordToggle.textContent =
+                    "Hide";
+
+            } else {
+
+                passwordInput.type =
+                    "password";
+
+                passwordToggle.textContent =
+                    "Show";
+
+            }
+
+        }
+
+
+
+        // ================================
+        // MESSAGE
+        // ================================
+
+        function showMessage(
+            text,
+            type
+        ) {
+
+            message.textContent =
+                text;
+
+
+            message.className =
+                "mb-6 rounded-lg border px-4 py-3";
+
+
+            if (type === "success") {
+
+                message.classList.add(
+                    "bg-green-100",
+                    "text-green-700",
+                    "border-green-300"
+                );
+
+            } else {
+
+                message.classList.add(
+                    "bg-red-100",
+                    "text-red-700",
+                    "border-red-300"
+                );
+
+            }
+
+
+            setTimeout(
+                function() {
+
+                    message.classList.add(
+                        "hidden"
+                    );
+
+                },
+                3000
+            );
+
+        }
+
+
+
+        // ================================
+        // DISPLAY USERS
+        // ================================
+
+        function displayUsers(
+            users
+        ) {
+
+            usersTable.innerHTML =
+                "";
+
+
+            if (
+                !Array.isArray(users) ||
+                users.length === 0
+            ) {
+
+                usersTable.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            class="px-5 py-10
+                                   text-center
+                                   text-gray-500">
+
+                            No users found.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+
+            }
+
+
+            users.forEach(
+                function(user) {
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    row.className =
+                        "hover:bg-gray-50";
+
+
+                    const roleBadge =
+                        user.role === "admin"
+
+                        ? `
+
+                            <span
+                                class="inline-block
+                                       bg-purple-100
+                                       text-purple-700
+                                       px-3 py-1
+                                       rounded-full
+                                       text-sm
+                                       font-medium">
+
+                                Admin
+
+                            </span>
+
+                        `
+
+                        : `
+
+                            <span
+                                class="inline-block
+                                       bg-blue-100
+                                       text-blue-700
+                                       px-3 py-1
+                                       rounded-full
+                                       text-sm
+                                       font-medium">
+
+                                Member
+
+                            </span>
+
+                        `;
+
+
+                    const actions =
+                        user.role === "admin"
+
+                        ? `
+
+                            <span
+                                class="text-gray-400
+                                       text-sm">
+
+                                Protected
+
+                            </span>
+
+                        `
+
+                        : `
+
+                            <button
+                                type="button"
+                                onclick="editUser(${user.id})"
+                                class="bg-yellow-500
+                                       text-white
+                                       px-3 py-2
+                                       rounded-lg
+                                       text-sm
+                                       font-medium
+                                       hover:bg-yellow-600">
+
+                                Edit
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                onclick="deleteUser(${user.id})"
+                                class="bg-red-600
+                                       text-white
+                                       px-3 py-2
+                                       rounded-lg
+                                       text-sm
+                                       font-medium
+                                       hover:bg-red-700
+                                       ml-2">
+
+                                Delete
+
+                            </button>
+
+                        `;
+
+
+                    row.innerHTML = `
+
+                        <td
+                            class="px-5 py-4
+                                   font-semibold
+                                   text-gray-800">
+
+                            ${user.name || "-"}
+
+                        </td>
+
+
+                        <td
+                            class="px-5 py-4
+                                   text-gray-600">
+
+                            ${user.email || "-"}
+
+                        </td>
+
+
+                        <td
+                            class="px-5 py-4">
+
+                            ${roleBadge}
+
+                        </td>
+
+
+                        <td
+                            class="px-5 py-4">
+
+                            ${actions}
+
+                        </td>
+
+                    `;
+
+
+                    usersTable.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+        }
+
+
+
+        // ================================
+        // ADD MEMBER
+        // ================================
+
+        userForm.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    nameInput.value.trim();
+
+
+                const email =
+                    emailInput.value
+                        .trim()
+                        .toLowerCase();
+
+
+                const password =
+                    passwordInput.value;
+
+
+                if (!name) {
+
+                    showMessage(
+                        "Please enter a name.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!email) {
+
+                    showMessage(
+                        "Please enter an email.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                if (password.length < 4) {
+
+                    showMessage(
+                        "Password must be at least 4 characters.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const users =
+                    getUsers();
+
+
+                const exists =
+                    users.some(
+                        function(user) {
+
+                            return (
+                                String(
+                                    user.email
+                                )
+                                .toLowerCase() ===
+                                email
+                            );
+
+                        }
+                    );
+
+
+                if (exists) {
+
+                    showMessage(
+                        "This email is already registered.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const newUser = {
+
+                    id: Date.now(),
+
+                    name: name,
+
+                    email: email,
+
+                    password: password,
+
+                    role: "member"
+
+                };
+
+
+                users.push(
+                    newUser
+                );
+
+
+                saveUsers(
+                    users
+                );
+
+
+                userForm.reset();
+
+
+                passwordInput.type =
+                    "password";
+
+
+                passwordToggle.textContent =
+                    "Show";
+
+
+                showMessage(
+                    "Member added successfully!",
+                    "success"
+                );
+
+
+                displayUsers(
+                    getUsers()
+                );
+
+            }
+        );
+
+
+
+        // ================================
+        // EDIT USER
+        // ================================
+
+        function editUser(id) {
+
+            const users =
+                getUsers();
+
+
+            const user =
+                users.find(
+                    function(item) {
+
+                        return Number(
+                            item.id
+                        ) === Number(id);
+
+                    }
+                );
+
+
+            if (!user) {
+
+                showMessage(
+                    "User not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                user.role === "admin"
+            ) {
+
+                showMessage(
+                    "Admin cannot be edited.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const newName =
+                prompt(
+                    "Enter new name:",
+                    user.name
+                );
+
+
+            if (newName === null) {
+
+                return;
+
+            }
+
+
+            const cleanName =
+                newName.trim();
+
+
+            if (!cleanName) {
+
+                showMessage(
+                    "Name cannot be empty.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const newEmail =
+                prompt(
+                    "Enter new email:",
+                    user.email
+                );
+
+
+            if (newEmail === null) {
+
+                return;
+
+            }
+
+
+            const cleanEmail =
+                newEmail
+                    .trim()
+                    .toLowerCase();
+
+
+            if (!cleanEmail) {
+
+                showMessage(
+                    "Email cannot be empty.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const duplicate =
+                users.some(
+                    function(item) {
+
+                        return (
+
+                            Number(
+                                item.id
+                            ) !== Number(id)
+
+                            &&
+
+                            String(
+                                item.email
+                            )
+                            .toLowerCase() ===
+                            cleanEmail
+
+                        );
+
+                    }
+                );
+
+
+            if (duplicate) {
+
+                showMessage(
+                    "This email is already used.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            user.name =
+                cleanName;
+
+
+            user.email =
+                cleanEmail;
+
+
+            saveUsers(
+                users
+            );
+
+
+            showMessage(
+                "Member updated successfully!",
+                "success"
+            );
+
+
+            displayUsers(
+                getUsers()
+            );
+
+        }
+
+
+
+        // ================================
+        // DELETE USER
+        // ================================
+
+        function deleteUser(id) {
+
+            let users =
+                getUsers();
+
+
+            const user =
+                users.find(
+                    function(item) {
+
+                        return Number(
+                            item.id
+                        ) === Number(id);
+
+                    }
+                );
+
+
+            if (!user) {
+
+                showMessage(
+                    "User not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                user.role === "admin"
+            ) {
+
+                showMessage(
+                    "Admin cannot be deleted.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    "Are you sure you want to delete " +
+                    user.name +
+                    "?"
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+            users =
+                users.filter(
+                    function(item) {
+
+                        return Number(
+                            item.id
+                        ) !== Number(id);
+
+                    }
+                );
+
+
+            saveUsers(
+                users
+            );
+
+
+            showMessage(
+                "Member deleted successfully!",
+                "success"
+            );
+
+
+            displayUsers(
+                getUsers()
+            );
+
+        }
+
+
+
+        // ================================
+        // SEARCH
+        // ================================
+
+        searchInput.addEventListener(
+            "input",
+            function() {
+
+                const search =
+                    this.value
+                        .toLowerCase()
+                        .trim();
+
+
+                const filtered =
+                    getUsers().filter(
+                        function(user) {
+
+                            const name =
+                                String(
+                                    user.name || ""
+                                )
+                                .toLowerCase();
+
+
+                            const email =
+                                String(
+                                    user.email || ""
+                                )
+                                .toLowerCase();
+
+
+                            return (
+                                name.includes(search) ||
+                                email.includes(search)
+                            );
+
+                        }
+                    );
+
+
+                displayUsers(
+                    filtered
+                );
+
+            }
+        );
+
+
+
+        // ================================
+        // INITIAL DISPLAY
+        // ================================
+
+        displayUsers(
+            getUsers()
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>

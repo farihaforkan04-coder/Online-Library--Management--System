@@ -1,12 +1,633 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Library Management System</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Online Library</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
-<body>
-    <h1>Online Library Management System</h1>
-    <p>Library frontend is under development.</p>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <nav class="bg-white shadow-md">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+
+            <div class="flex flex-col sm:flex-row
+                        items-center justify-between gap-4">
+
+                <!-- LOGO -->
+
+                <a
+                    href="index.html"
+                    class="flex items-center gap-2">
+
+                    <span class="text-2xl">
+                        📚
+                    </span>
+
+                    <h1 class="text-xl font-bold text-gray-800">
+                        Online Library
+                    </h1>
+
+                </a>
+
+
+                <!-- NAVIGATION -->
+
+                <div class="flex flex-wrap
+                            justify-center
+                            items-center
+                            gap-4 sm:gap-6">
+
+                    <a
+                        href="index.html"
+                        class="text-blue-600 font-semibold">
+
+                        Dashboard
+
+                    </a>
+
+
+                    <a
+                        href="books.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Books
+
+                    </a>
+
+
+                    <a
+                        href="borrow.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Borrow
+
+                    </a>
+
+
+                    <a
+                        href="return-book.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Return
+
+                    </a>
+
+
+                    <a
+                        href="borrow-history.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        History
+
+                    </a>
+
+
+                    <!-- ADD BOOK -->
+
+                    <a
+                        id="addBookNav"
+                        href="add-book.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Add Book
+
+                    </a>
+
+
+                    <!-- USER -->
+
+                    <div class="relative">
+
+                        <button
+                            id="userMenuButton"
+                            type="button"
+                            class="text-gray-700 font-medium
+                                   hover:text-blue-600">
+
+                            <span id="userRole">
+                                User
+                            </span>
+
+                            ▾
+
+                        </button>
+
+
+                        <div
+                            id="userMenu"
+                            class="hidden absolute right-0 mt-2
+                                   w-48 bg-white rounded-lg
+                                   shadow-lg border
+                                   border-gray-200 z-50">
+
+                            <div class="px-4 py-3 border-b">
+
+                                <p class="text-xs text-gray-500">
+                                    Logged in as
+                                </p>
+
+                                <p
+                                    id="userEmail"
+                                    class="text-sm font-semibold
+                                           text-gray-800 truncate">
+
+                                    User
+
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                onclick="logout()"
+                                class="w-full text-left
+                                       px-4 py-3
+                                       text-red-600
+                                       hover:bg-red-50
+                                       font-medium">
+
+                                Logout
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================================
+         MAIN
+    ================================= -->
+
+    <main
+        class="max-w-7xl mx-auto
+               px-4 sm:px-6
+               py-8 sm:py-10">
+
+
+        <!-- HEADING -->
+
+        <div class="mb-8">
+
+            <h2
+                class="text-2xl sm:text-3xl
+                       font-bold text-gray-800">
+
+                Dashboard
+
+            </h2>
+
+
+            <p class="mt-2 text-gray-600">
+
+                Welcome to the Online Library Management System.
+
+            </p>
+
+        </div>
+
+
+        <!-- ================================
+             STATISTICS
+        ================================= -->
+
+        <div
+            class="grid grid-cols-1
+                   sm:grid-cols-2
+                   lg:grid-cols-3
+                   gap-6">
+
+
+            <!-- TOTAL -->
+
+            <div
+                class="bg-white rounded-xl
+                       shadow-md p-6">
+
+                <p class="text-gray-500 text-sm">
+                    Total Books
+                </p>
+
+                <h3
+                    id="totalBooks"
+                    class="text-3xl font-bold
+                           text-gray-800 mt-2">
+
+                    0
+
+                </h3>
+
+            </div>
+
+
+            <!-- AVAILABLE -->
+
+            <div
+                class="bg-white rounded-xl
+                       shadow-md p-6">
+
+                <p class="text-gray-500 text-sm">
+                    Available Books
+                </p>
+
+                <h3
+                    id="availableBooks"
+                    class="text-3xl font-bold
+                           text-green-600 mt-2">
+
+                    0
+
+                </h3>
+
+            </div>
+
+
+            <!-- UNAVAILABLE -->
+
+            <div
+                class="bg-white rounded-xl
+                       shadow-md p-6">
+
+                <p class="text-gray-500 text-sm">
+                    Not Available
+                </p>
+
+                <h3
+                    id="unavailableBooks"
+                    class="text-3xl font-bold
+                           text-red-600 mt-2">
+
+                    0
+
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================
+             QUICK ACTIONS
+        ================================= -->
+
+        <div
+            class="mt-8 bg-white
+                   rounded-xl shadow-md p-6">
+
+            <h3
+                class="text-xl font-bold
+                       text-gray-800 mb-5">
+
+                Quick Actions
+
+            </h3>
+
+
+            <div
+                class="flex flex-col
+                       sm:flex-row
+                       gap-4">
+
+
+                <!-- BOOKS -->
+
+                <a
+                    href="books.html"
+                    class="w-full sm:w-auto
+                           bg-blue-600
+                           text-white
+                           px-6 py-3
+                           rounded-lg
+                           text-center
+                           font-medium
+                           hover:bg-blue-700">
+
+                    View Books
+
+                </a>
+
+
+                <!-- BORROW -->
+
+                <a
+                    href="borrow.html"
+                    class="w-full sm:w-auto
+                           bg-indigo-600
+                           text-white
+                           px-6 py-3
+                           rounded-lg
+                           text-center
+                           font-medium
+                           hover:bg-indigo-700">
+
+                    Borrow Book
+
+                </a>
+
+
+                <!-- RETURN -->
+
+                <a
+                    href="return-book.html"
+                    class="w-full sm:w-auto
+                           bg-green-600
+                           text-white
+                           px-6 py-3
+                           rounded-lg
+                           text-center
+                           font-medium
+                           hover:bg-green-700">
+
+                    Return Book
+
+                </a>
+
+
+                <!-- ADD -->
+
+                <a
+                    id="addBookAction"
+                    href="add-book.html"
+                    class="w-full sm:w-auto
+                           bg-purple-600
+                           text-white
+                           px-6 py-3
+                           rounded-lg
+                           text-center
+                           font-medium
+                           hover:bg-purple-700">
+
+                    + Add Book
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================
+             LOGGED USER
+        ================================= -->
+
+        <div
+            class="mt-8 bg-white rounded-xl
+                   shadow-md p-6">
+
+            <h3
+                class="text-xl font-bold
+                       text-gray-800">
+
+                Account
+
+            </h3>
+
+
+            <p class="mt-2 text-gray-600">
+
+                Logged in as:
+
+                <span
+                    id="accountEmail"
+                    class="font-semibold text-gray-800">
+
+                    -
+
+                </span>
+
+            </p>
+
+
+            <p class="mt-1 text-gray-600">
+
+                Role:
+
+                <span
+                    id="accountRole"
+                    class="font-semibold text-blue-600">
+
+                    -
+
+                </span>
+
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <!-- AUTH -->
+
+    <script src="js/auth.js"></script>
+
+
+    <script>
+
+        // ================================
+        // PROTECT PAGE
+        // ================================
+
+        if (!protectPage()) {
+
+            throw new Error("Not logged in");
+
+        }
+
+
+        // ================================
+        // CURRENT USER
+        // ================================
+
+        const currentUser =
+            getCurrentUser();
+
+
+        const currentRole =
+            getUserRole();
+
+
+        // ================================
+        // USER INFO
+        // ================================
+
+        if (currentUser) {
+
+            document.getElementById(
+                "userEmail"
+            ).textContent =
+                currentUser.email;
+
+
+            document.getElementById(
+                "accountEmail"
+            ).textContent =
+                currentUser.email;
+
+
+            document.getElementById(
+                "accountRole"
+            ).textContent =
+                currentRole === "admin"
+                    ? "Admin"
+                    : "Member";
+
+        }
+
+
+        document.getElementById(
+            "userRole"
+        ).textContent =
+            currentRole === "admin"
+                ? "Admin"
+                : "Member";
+
+
+        // ================================
+        // MEMBER = HIDE ADMIN ACTIONS
+        // ================================
+
+        if (currentRole !== "admin") {
+
+            document.getElementById(
+                "addBookNav"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "addBookAction"
+            ).style.display = "none";
+
+        }
+
+
+        // ================================
+        // USER MENU
+        // ================================
+
+        const userMenuButton =
+            document.getElementById(
+                "userMenuButton"
+            );
+
+
+        const userMenu =
+            document.getElementById(
+                "userMenu"
+            );
+
+
+        userMenuButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                userMenu.classList.toggle(
+                    "hidden"
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            "click",
+            function () {
+
+                userMenu.classList.add(
+                    "hidden"
+                );
+
+            }
+        );
+
+
+        // ================================
+        // BOOK DATA
+        // ================================
+
+        const books =
+            JSON.parse(
+                localStorage.getItem("books")
+            ) || [];
+
+
+        // ================================
+        // STATISTICS
+        // ================================
+
+        const total =
+            books.length;
+
+
+        const available =
+            books.filter(
+                function (book) {
+
+                    return Number(
+                        book.quantity
+                    ) > 0;
+
+                }
+            ).length;
+
+
+        const unavailable =
+            books.filter(
+                function (book) {
+
+                    return Number(
+                        book.quantity
+                    ) <= 0;
+
+                }
+            ).length;
+
+
+        document.getElementById(
+            "totalBooks"
+        ).textContent = total;
+
+
+        document.getElementById(
+            "availableBooks"
+        ).textContent = available;
+
+
+        document.getElementById(
+            "unavailableBooks"
+        ).textContent = unavailable;
+
+    </script>
+
+
 </body>
+
 </html>

@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Books - Online Library</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <nav class="bg-white shadow-md">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+
+            <div class="flex flex-col sm:flex-row
+                        items-center justify-between gap-4">
+
+                <!-- LOGO -->
+
+                <a
+                    href="index.html"
+                    class="flex items-center gap-2">
+
+                    <span class="text-2xl">
+                        📚
+                    </span>
+
+                    <h1 class="text-xl font-bold text-gray-800">
+                        Online Library
+                    </h1>
+
+                </a>
+
+
+                <!-- NAVIGATION -->
+
+                <div class="flex flex-wrap
+                            justify-center
+                            items-center
+                            gap-4 sm:gap-6">
+
+                    <a
+                        href="index.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Dashboard
+
+                    </a>
+
+
+                    <a
+                        href="books.html"
+                        class="text-blue-600 font-semibold">
+
+                        Books
+
+                    </a>
+
+
+                    <a
+                        href="borrow.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Borrow
+
+                    </a>
+
+
+                    <a
+                        href="return-book.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Return
+
+                    </a>
+
+
+                    <a
+                        href="borrow-history.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        History
+
+                    </a>
+
+
+                    <a
+                        id="addBookNav"
+                        href="add-book.html"
+                        class="text-gray-600 hover:text-blue-600">
+
+                        Add Book
+
+                    </a>
+
+
+                    <!-- USER -->
+
+                    <span
+                        id="userRole"
+                        class="text-gray-700 font-medium">
+
+                        User
+
+                    </span>
+
+
+                    <button
+                        type="button"
+                        onclick="logout()"
+                        class="text-red-600 hover:text-red-700 font-medium">
+
+                        Logout
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ================================
+         MAIN
+    ================================= -->
+
+    <main
+        class="max-w-7xl mx-auto
+               px-4 sm:px-6
+               py-8 sm:py-10">
+
+
+        <!-- HEADING -->
+
+        <div
+            class="flex flex-col sm:flex-row
+                   sm:items-center
+                   sm:justify-between
+                   gap-4 mb-8">
+
+            <div>
+
+                <h2
+                    class="text-2xl sm:text-3xl
+                           font-bold text-gray-800">
+
+                    Books
+
+                </h2>
+
+
+                <p class="mt-2 text-gray-600">
+
+                    Browse and manage library books.
+
+                </p>
+
+            </div>
+
+
+            <!-- ADD BUTTON -->
+
+            <a
+                id="addBookButton"
+                href="add-book.html"
+                class="bg-blue-600
+                       text-white
+                       px-5 py-3
+                       rounded-lg
+                       font-medium
+                       text-center
+                       hover:bg-blue-700">
+
+                + Add Book
+
+            </a>
+
+        </div>
+
+
+
+        <!-- ================================
+             SEARCH
+        ================================= -->
+
+        <div
+            class="bg-white rounded-xl
+                   shadow-md p-5 mb-6">
+
+            <label
+                for="searchInput"
+                class="block text-sm
+                       font-semibold
+                       text-gray-700 mb-2">
+
+                Search Books
+
+            </label>
+
+
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search by title, author or category..."
+                class="w-full border border-gray-300
+                       rounded-lg px-4 py-3
+                       focus:outline-none
+                       focus:ring-2
+                       focus:ring-blue-500">
+
+        </div>
+
+
+
+        <!-- ================================
+             MESSAGE
+        ================================= -->
+
+        <div
+            id="message"
+            class="hidden mb-6 rounded-lg
+                   border px-4 py-3">
+
+        </div>
+
+
+
+        <!-- ================================
+             BOOK GRID
+        ================================= -->
+
+        <div
+            id="booksList"
+            class="grid grid-cols-1
+                   sm:grid-cols-2
+                   lg:grid-cols-3
+                   gap-6">
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- AUTH -->
+
+    <script src="js/auth.js"></script>
+
+
+    <script>
+
+        // ================================
+        // PROTECT PAGE
+        // ================================
+
+        if (!protectPage()) {
+
+            throw new Error("Not logged in");
+
+        }
+
+
+        // ================================
+        // USER
+        // ================================
+
+        const currentUser =
+            getCurrentUser();
+
+
+        const currentRole =
+            getUserRole();
+
+
+        showUserInfo("userRole");
+
+
+
+        // ================================
+        // ADMIN CONTROLS
+        // ================================
+
+        if (currentRole !== "admin") {
+
+            document.getElementById(
+                "addBookNav"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "addBookButton"
+            ).style.display = "none";
+
+        }
+
+
+
+        // ================================
+        // BOOKS
+        // ================================
+
+        let books =
+            JSON.parse(
+                localStorage.getItem("books")
+            ) || [];
+
+
+
+        // ================================
+        // MESSAGE
+        // ================================
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        function showMessage(text, type) {
+
+            message.textContent = text;
+
+
+            message.classList.remove(
+                "hidden",
+                "bg-green-100",
+                "text-green-700",
+                "border-green-300",
+                "bg-red-100",
+                "text-red-700",
+                "border-red-300"
+            );
+
+
+            if (type === "success") {
+
+                message.classList.add(
+                    "bg-green-100",
+                    "text-green-700",
+                    "border-green-300"
+                );
+
+            } else {
+
+                message.classList.add(
+                    "bg-red-100",
+                    "text-red-700",
+                    "border-red-300"
+                );
+
+            }
+
+
+            setTimeout(
+                function () {
+
+                    message.classList.add(
+                        "hidden"
+                    );
+
+                },
+                3000
+            );
+
+        }
+
+
+
+        // ================================
+        // DISPLAY BOOKS
+        // ================================
+
+        function displayBooks(bookList) {
+
+            const booksList =
+                document.getElementById(
+                    "booksList"
+                );
+
+
+            booksList.innerHTML = "";
+
+
+            if (bookList.length === 0) {
+
+                booksList.innerHTML = `
+
+                    <div
+                        class="col-span-full
+                               bg-white
+                               rounded-xl
+                               shadow-md
+                               p-10
+                               text-center">
+
+                        <div class="text-5xl mb-4">
+                            📚
+                        </div>
+
+                        <p class="text-gray-500">
+
+                            No books found.
+
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+
+            bookList.forEach(
+                function(book) {
+
+                    const quantity =
+                        Number(book.quantity) || 0;
+
+
+                    const available =
+                        quantity > 0;
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "bg-white rounded-xl shadow-md p-6";
+
+
+                    card.innerHTML = `
+
+                        <!-- TITLE -->
+
+                        <h3
+                            class="text-xl
+                                   font-bold
+                                   text-gray-800">
+
+                            ${escapeHTML(
+                                book.title || ""
+                            )}
+
+                        </h3>
+
+
+                        <!-- AUTHOR -->
+
+                        <p
+                            class="text-gray-500
+                                   mt-2">
+
+                            <span
+                                class="font-medium
+                                       text-gray-700">
+
+                                Author:
+
+                            </span>
+
+                            ${escapeHTML(
+                                book.author || "-"
+                            )}
+
+                        </p>
+
+
+                        <!-- CATEGORY -->
+
+                        <p
+                            class="text-gray-500
+                                   mt-1">
+
+                            <span
+                                class="font-medium
+                                       text-gray-700">
+
+                                Category:
+
+                            </span>
+
+                            ${escapeHTML(
+                                book.category || "-"
+                            )}
+
+                        </p>
+
+
+                        <!-- QUANTITY -->
+
+                        <div class="mt-4">
+
+                            ${
+                                available
+
+                                ? `
+
+                                    <span
+                                        class="inline-block
+                                               bg-green-100
+                                               text-green-700
+                                               px-3 py-1
+                                               rounded-full
+                                               text-sm
+                                               font-medium">
+
+                                        Available: ${quantity}
+
+                                    </span>
+
+                                `
+
+                                : `
+
+                                    <span
+                                        class="inline-block
+                                               bg-red-100
+                                               text-red-700
+                                               px-3 py-1
+                                               rounded-full
+                                               text-sm
+                                               font-medium">
+
+                                        Not Available
+
+                                    </span>
+
+                                `
+                            }
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+
+                        <div
+                            class="mt-5
+                                   flex flex-wrap
+                                   gap-3">
+
+                            ${
+                                available
+
+                                ? `
+
+                                    <button
+                                        type="button"
+                                        onclick="borrowBook(${Number(book.id)})"
+                                        class="flex-1
+                                               bg-blue-600
+                                               text-white
+                                               px-4 py-2
+                                               rounded-lg
+                                               font-medium
+                                               hover:bg-blue-700">
+
+                                        Borrow
+
+                                    </button>
+
+                                `
+
+                                : ""
+
+                            }
+
+
+                            ${
+                                currentRole === "admin"
+
+                                ? `
+
+                                    <a
+                                        href="add-book.html?id=${encodeURIComponent(book.id)}"
+                                        class="bg-yellow-500
+                                               text-white
+                                               px-4 py-2
+                                               rounded-lg
+                                               font-medium
+                                               hover:bg-yellow-600">
+
+                                        Edit
+
+                                    </a>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="deleteBook(${Number(book.id)})"
+                                        class="bg-red-600
+                                               text-white
+                                               px-4 py-2
+                                               rounded-lg
+                                               font-medium
+                                               hover:bg-red-700">
+
+                                        Delete
+
+                                    </button>
+
+                                `
+
+                                : ""
+
+                            }
+
+                        </div>
+
+                    `;
+
+
+                    booksList.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+
+        // ================================
+        // BORROW
+        // ================================
+
+        function borrowBook(bookId) {
+
+            if (!currentUser) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            let currentBooks =
+                JSON.parse(
+                    localStorage.getItem(
+                        "books"
+                    )
+                ) || [];
+
+
+            const book =
+                currentBooks.find(
+                    function(item) {
+
+                        return Number(item.id) ===
+                               Number(bookId);
+
+                    }
+                );
+
+
+            if (!book) {
+
+                showMessage(
+                    "Book not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const quantity =
+                Number(book.quantity) || 0;
+
+
+            if (quantity <= 0) {
+
+                showMessage(
+                    "This book is not available.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            // Reduce quantity
+
+            book.quantity =
+                quantity - 1;
+
+
+            // Save books
+
+            localStorage.setItem(
+                "books",
+                JSON.stringify(
+                    currentBooks
+                )
+            );
+
+
+            // Get records
+
+            let borrowedBooks =
+                JSON.parse(
+                    localStorage.getItem(
+                        "borrowedBooks"
+                    )
+                ) || [];
+
+
+            // Prevent duplicate active borrow
+
+            const alreadyBorrowed =
+                borrowedBooks.some(
+                    function(record) {
+
+                        return (
+                            record.userEmail ===
+                            currentUser.email &&
+
+                            Number(record.bookId) ===
+                            Number(book.id) &&
+
+                            record.returned === false
+                        );
+
+                    }
+                );
+
+
+            if (alreadyBorrowed) {
+
+                // Restore quantity
+
+                book.quantity =
+                    quantity;
+
+
+                localStorage.setItem(
+                    "books",
+                    JSON.stringify(
+                        currentBooks
+                    )
+                );
+
+
+                showMessage(
+                    "You already borrowed this book.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            // ================================
+            // BORROW DUE DATE
+            // ================================
+
+            const borrowedDate =
+                new Date();
+
+
+            const dueDate =
+                new Date(
+                    borrowedDate
+                );
+
+
+            // 7 days borrowing period
+
+            dueDate.setDate(
+                dueDate.getDate() + 7
+            );
+
+
+            const borrowRecord = {
+
+                id: Date.now(),
+
+                bookId: book.id,
+
+                bookTitle: book.title,
+
+                userEmail:
+                    currentUser.email,
+
+                borrowedAt:
+                    borrowedDate.toLocaleString(),
+
+                dueDate:
+                    dueDate.toLocaleString(),
+
+                returned: false,
+
+                returnedAt: null,
+
+                fine: 0
+
+            };
+
+
+            borrowedBooks.push(
+                borrowRecord
+            );
+
+
+            localStorage.setItem(
+                "borrowedBooks",
+                JSON.stringify(
+                    borrowedBooks
+                )
+            );
+
+
+            showMessage(
+                "Book borrowed successfully! Due in 7 days.",
+                "success"
+            );
+
+
+            // Refresh
+
+            books = currentBooks;
+
+            displayBooks(
+                books
+            );
+
+        }
+
+
+
+        // ================================
+        // DELETE BOOK
+        // ================================
+
+        function deleteBook(bookId) {
+
+            if (currentRole !== "admin") {
+
+                alert(
+                    "Only admin can delete books."
+                );
+
+                return;
+
+            }
+
+
+            let currentBooks =
+                JSON.parse(
+                    localStorage.getItem(
+                        "books"
+                    )
+                ) || [];
+
+
+            const book =
+                currentBooks.find(
+                    function(item) {
+
+                        return Number(item.id) ===
+                               Number(bookId);
+
+                    }
+                );
+
+
+            if (!book) {
+
+                showMessage(
+                    "Book not found.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    "Delete \"" +
+                    book.title +
+                    "\"?"
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            // Check active borrow
+
+            const borrowedBooks =
+                JSON.parse(
+                    localStorage.getItem(
+                        "borrowedBooks"
+                    )
+                ) || [];
+
+
+            const activeBorrow =
+                borrowedBooks.some(
+                    function(record) {
+
+                        return (
+                            Number(record.bookId) ===
+                            Number(bookId) &&
+
+                            record.returned === false
+                        );
+
+                    }
+                );
+
+
+            if (activeBorrow) {
+
+                showMessage(
+                    "This book is currently borrowed and cannot be deleted.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            currentBooks =
+                currentBooks.filter(
+                    function(item) {
+
+                        return Number(item.id) !==
+                               Number(bookId);
+
+                    }
+                );
+
+
+            localStorage.setItem(
+                "books",
+                JSON.stringify(
+                    currentBooks
+                )
+            );
+
+
+            books = currentBooks;
+
+
+            displayBooks(
+                books
+            );
+
+
+            showMessage(
+                "Book deleted successfully.",
+                "success"
+            );
+
+        }
+
+
+
+        // ================================
+        // SEARCH
+        // ================================
+
+        document
+            .getElementById("searchInput")
+            .addEventListener(
+                "input",
+                function() {
+
+                    const search =
+                        this.value
+                            .toLowerCase()
+                            .trim();
+
+
+                    const filtered =
+                        books.filter(
+                            function(book) {
+
+                                return (
+
+                                    String(
+                                        book.title || ""
+                                    )
+                                    .toLowerCase()
+                                    .includes(search)
+
+                                    ||
+
+                                    String(
+                                        book.author || ""
+                                    )
+                                    .toLowerCase()
+                                    .includes(search)
+
+                                    ||
+
+                                    String(
+                                        book.category || ""
+                                    )
+                                    .toLowerCase()
+                                    .includes(search)
+
+                                );
+
+                            }
+                        );
+
+
+                    displayBooks(
+                        filtered
+                    );
+
+                }
+            );
+
+
+
+        // ================================
+        // ESCAPE HTML
+        // ================================
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+
+        // ================================
+        // INITIAL DISPLAY
+        // ================================
+
+        displayBooks(
+            books
+        );
+
+    </script>
+
+
+</body>
+
+</html>
