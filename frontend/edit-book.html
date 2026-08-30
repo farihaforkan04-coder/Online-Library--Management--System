@@ -1,19 +1,24 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Edit Book - Online Library</title>
+```
+<title>Edit Book - Online Library</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+```
+
 </head>
 
 <body class="bg-gray-100 min-h-screen">
 
+```
+<!-- Navigation -->
 <nav class="bg-white shadow-md">
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
 
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -44,23 +49,25 @@
                 </a>
 
                 <span class="text-gray-700 font-medium">
-    Welcome, <strong data-user-name></strong>
-</span>
+                    Welcome, <strong id="userName"></strong>
+                </span>
 
-<button type="button"
-        data-logout
-        class="text-red-600 hover:text-red-700 font-medium">
-    Logout
-</button>
+                <button
+                    type="button"
+                    id="logoutButton"
+                    class="text-red-600 hover:text-red-700 font-medium">
+                    Logout
+                </button>
 
             </div>
 
         </div>
 
     </div>
-
 </nav>
 
+
+<!-- Main -->
 <main class="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
 
     <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
@@ -73,70 +80,102 @@
             Update the information of this book.
         </p>
 
+
+        <!-- Error -->
         <div id="errorMessage"
              class="hidden mt-5 bg-red-100 border border-red-300
                     text-red-700 rounded-lg px-4 py-3">
         </div>
 
+
+        <!-- Success -->
         <div id="successMessage"
              class="hidden mt-5 bg-green-100 border border-green-300
                     text-green-700 rounded-lg px-4 py-3">
         </div>
 
-        <form id="editBookForm" class="mt-6">
 
+        <!-- Loading -->
+        <div id="loadingMessage"
+             class="mt-5 text-gray-600">
+            Loading book information...
+        </div>
+
+
+        <!-- Form -->
+        <form id="editBookForm"
+              class="mt-6 hidden">
+
+            <!-- ISBN -->
             <div class="mb-5">
+
                 <label for="isbn"
                        class="block font-semibold mb-2">
                     ISBN
                 </label>
 
-                <input type="text"
-                       id="isbn"
-                       required
-                       maxlength="20"
-                       class="w-full border border-gray-300 rounded-lg px-4 py-3
-                              focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                    type="text"
+                    id="isbn"
+                    required
+                    maxlength="20"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3
+                           focus:outline-none focus:ring-2 focus:ring-blue-500">
+
             </div>
 
+
+            <!-- Title -->
             <div class="mb-5">
+
                 <label for="title"
                        class="block font-semibold mb-2">
                     Book Title
                 </label>
 
-                <input type="text"
-                       id="title"
-                       required
-                       maxlength="150"
-                       class="w-full border border-gray-300 rounded-lg px-4 py-3
-                              focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                    type="text"
+                    id="title"
+                    required
+                    maxlength="150"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3
+                           focus:outline-none focus:ring-2 focus:ring-blue-500">
+
             </div>
 
+
+            <!-- Author -->
             <div class="mb-5">
+
                 <label for="author"
                        class="block font-semibold mb-2">
                     Author
                 </label>
 
-                <input type="text"
-                       id="author"
-                       required
-                       maxlength="100"
-                       class="w-full border border-gray-300 rounded-lg px-4 py-3
-                              focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                    type="text"
+                    id="author"
+                    required
+                    maxlength="100"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3
+                           focus:outline-none focus:ring-2 focus:ring-blue-500">
+
             </div>
 
+
+            <!-- Category -->
             <div class="mb-5">
+
                 <label for="category"
                        class="block font-semibold mb-2">
                     Category
                 </label>
 
-                <select id="category"
-                        required
-                        class="w-full border border-gray-300 rounded-lg px-4 py-3
-                               bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select
+                    id="category"
+                    required
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3
+                           bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
 
                     <option value="">Select Category</option>
                     <option value="Programming">Programming</option>
@@ -144,63 +183,95 @@
                     <option value="Fiction">Fiction</option>
                     <option value="Science">Science</option>
                     <option value="History">History</option>
+                    <option value="General">General</option>
 
                 </select>
+
             </div>
 
-            <div class="mb-5">
-                <label for="publisher"
-                       class="block font-semibold mb-2">
-                    Publisher
-                </label>
 
-                <input type="text"
-                       id="publisher"
-                       class="w-full border border-gray-300 rounded-lg px-4 py-3
-                              focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
+            <!-- Publication Year -->
             <div class="mb-5">
-                <label for="publicationYear"
+
+                <label for="publishedYear"
                        class="block font-semibold mb-2">
                     Publication Year
                 </label>
 
-                <input type="number"
-                       id="publicationYear"
-                       min="1000"
-                       max="2100"
-                       class="w-full border border-gray-300 rounded-lg px-4 py-3
-                              focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                    type="number"
+                    id="publishedYear"
+                    min="1000"
+                    max="2100"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3
+                           focus:outline-none focus:ring-2 focus:ring-blue-500">
+
             </div>
 
-            <div class="mb-6">
+
+            <!-- Quantity -->
+            <div class="mb-5">
+
                 <label for="quantity"
                        class="block font-semibold mb-2">
-                    Quantity
+                    Total Quantity
                 </label>
 
-                <input type="number"
-                       id="quantity"
-                       min="0"
-                       max="10000"
-                       required
-                       class="w-full border border-gray-300 rounded-lg px-4 py-3
-                              focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                    type="number"
+                    id="quantity"
+                    min="0"
+                    max="10000"
+                    required
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3
+                           focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                <p class="text-sm text-gray-500 mt-1">
+                    Available copies will be adjusted automatically.
+                </p>
+
             </div>
 
+
+            <!-- Description -->
+            <div class="mb-6">
+
+                <label for="description"
+                       class="block font-semibold mb-2">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    rows="4"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3
+                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter book description..."></textarea>
+
+            </div>
+
+
+            <!-- Buttons -->
             <div class="flex flex-col sm:flex-row gap-3">
 
-                <button type="submit"
-                        class="bg-blue-600 text-white px-6 py-3 rounded-lg
-                               hover:bg-blue-700 font-medium">
+                <button
+                    type="submit"
+                    id="updateButton"
+                    class="bg-blue-600 text-white px-6 py-3 rounded-lg
+                           hover:bg-blue-700 font-medium">
+
                     Update Book
+
                 </button>
 
-                <a href="books.html"
-                   class="text-center px-6 py-3 border border-gray-300
-                          rounded-lg text-gray-700 hover:bg-gray-100">
+
+                <a
+                    href="books.html"
+                    class="text-center px-6 py-3 border border-gray-300
+                           rounded-lg text-gray-700 hover:bg-gray-100">
+
                     Cancel
+
                 </a>
 
             </div>
@@ -211,100 +282,245 @@
 
 </main>
 
-<script src="js/auth.js"></script>
 
-<script>
+<!-- JavaScript -->
+<script type="module">
 
-protectAdminPage();
+    import {
+        request,
+        getLoggedInUser,
+        removeUser
+    } from "./javascript/api.js";
 
-showUserInfo("userRole");
 
-const urlParams =
-    new URLSearchParams(window.location.search);
+    const form =
+        document.getElementById("editBookForm");
 
-const bookId =
-    Number(urlParams.get("id"));
+    const errorMessage =
+        document.getElementById("errorMessage");
 
-let books =
-    JSON.parse(localStorage.getItem("books")) || [];
+    const successMessage =
+        document.getElementById("successMessage");
 
-const bookIndex =
-    books.findIndex(function(book) {
-        return Number(book.id) === bookId;
+    const loadingMessage =
+        document.getElementById("loadingMessage");
+
+    const updateButton =
+        document.getElementById("updateButton");
+
+    const userName =
+        document.getElementById("userName");
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+
+    // --------------------------------------------------
+    // Check login
+    // --------------------------------------------------
+
+    const user = getLoggedInUser();
+
+
+    if (!user || !user.token) {
+
+        window.location.href = "./login.html";
+
+    }
+
+
+    // --------------------------------------------------
+    // Check role
+    // --------------------------------------------------
+
+    const userRole =
+        String(user?.role || "").toLowerCase();
+
+
+    if (userRole !== "admin" && userRole !== "librarian") {
+
+        document.body.innerHTML = `
+            <div class="min-h-screen flex items-center justify-center px-4">
+                <div class="bg-white shadow-md rounded-xl p-8 max-w-md text-center">
+                    <div class="text-5xl mb-4">🔒</div>
+
+                    <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                        Access Denied
+                    </h1>
+
+                    <p class="text-gray-600 mb-6">
+                        Only administrators and librarians can edit books.
+                    </p>
+
+                    <a
+                        href="books.html"
+                        class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg
+                               hover:bg-blue-700">
+                        Back to Books
+                    </a>
+                </div>
+            </div>
+        `;
+
+        throw new Error("Unauthorized role");
+
+    }
+
+
+    // --------------------------------------------------
+    // Show user
+    // --------------------------------------------------
+
+    userName.textContent =
+        user.name || user.email || "User";
+
+
+    // --------------------------------------------------
+    // Logout
+    // --------------------------------------------------
+
+    logoutButton.addEventListener("click", function () {
+
+        removeUser();
+
+        window.location.href = "./login.html";
+
     });
 
-const form =
-    document.getElementById("editBookForm");
 
-const errorMessage =
-    document.getElementById("errorMessage");
+    // --------------------------------------------------
+    // Get book ID from URL
+    // Example:
+    // edit-book.html?id=66abc123...
+    // --------------------------------------------------
 
-const successMessage =
-    document.getElementById("successMessage");
+    const urlParams =
+        new URLSearchParams(window.location.search);
 
-if (bookIndex === -1) {
-
-    errorMessage.textContent =
-        "Book could not be found.";
-
-    errorMessage.classList.remove("hidden");
-
-    form.style.display = "none";
-
-} else {
-
-    const book = books[bookIndex];
-
-    document.getElementById("isbn").value =
-        book.isbn || "";
-
-    document.getElementById("title").value =
-        book.title || "";
-
-    document.getElementById("author").value =
-        book.author || "";
-
-    document.getElementById("category").value =
-        book.category || "";
-
-    document.getElementById("publisher").value =
-        book.publisher || "";
-
-    document.getElementById("publicationYear").value =
-        book.publicationYear || "";
-
-    document.getElementById("quantity").value =
-        book.quantity ?? 0;
+    const bookId =
+        urlParams.get("id");
 
 
-    form.addEventListener("submit", function(event) {
+    if (!bookId) {
+
+        loadingMessage.classList.add("hidden");
+
+        errorMessage.textContent =
+            "Book ID is missing.";
+
+        errorMessage.classList.remove("hidden");
+
+        throw new Error("Book ID is missing");
+
+    }
+
+
+    // --------------------------------------------------
+    // Load book
+    // --------------------------------------------------
+
+    async function loadBook() {
+
+        try {
+
+            const book =
+                await request(`/books/${bookId}`);
+
+
+            document.getElementById("isbn").value =
+                book.isbn || "";
+
+
+            document.getElementById("title").value =
+                book.title || "";
+
+
+            document.getElementById("author").value =
+                book.author || "";
+
+
+            document.getElementById("category").value =
+                book.category || "General";
+
+
+            document.getElementById("publishedYear").value =
+                book.publishedYear || "";
+
+
+            document.getElementById("quantity").value =
+                book.quantity ?? 0;
+
+
+            document.getElementById("description").value =
+                book.description || "";
+
+
+            loadingMessage.classList.add("hidden");
+
+            form.classList.remove("hidden");
+
+
+        } catch (error) {
+
+            loadingMessage.classList.add("hidden");
+
+            errorMessage.textContent =
+                error.message || "Failed to load book.";
+
+            errorMessage.classList.remove("hidden");
+
+        }
+
+    }
+
+
+    loadBook();
+
+
+    // --------------------------------------------------
+    // Update book
+    // --------------------------------------------------
+
+    form.addEventListener("submit", async function (event) {
 
         event.preventDefault();
+
 
         errorMessage.classList.add("hidden");
         successMessage.classList.add("hidden");
 
+
         const isbn =
             document.getElementById("isbn").value.trim();
+
 
         const title =
             document.getElementById("title").value.trim();
 
+
         const author =
             document.getElementById("author").value.trim();
+
 
         const category =
             document.getElementById("category").value;
 
-        const publisher =
-            document.getElementById("publisher").value.trim();
 
-        const publicationYear =
-            document.getElementById("publicationYear").value.trim();
+        const publishedYear =
+            document.getElementById("publishedYear").value.trim();
+
 
         const quantity =
             Number(document.getElementById("quantity").value);
 
+
+        const description =
+            document.getElementById("description").value.trim();
+
+
+        // --------------------------------------------------
+        // Frontend validation
+        // --------------------------------------------------
 
         if (!isbn || !title || !author || !category) {
 
@@ -314,6 +530,7 @@ if (bookIndex === -1) {
             errorMessage.classList.remove("hidden");
 
             return;
+
         }
 
 
@@ -325,14 +542,15 @@ if (bookIndex === -1) {
             errorMessage.classList.remove("hidden");
 
             return;
+
         }
 
 
         if (
-            publicationYear !== "" &&
+            publishedYear !== "" &&
             (
-                Number(publicationYear) < 1000 ||
-                Number(publicationYear) > 2100
+                Number(publishedYear) < 1000 ||
+                Number(publishedYear) > 2100
             )
         ) {
 
@@ -342,81 +560,104 @@ if (bookIndex === -1) {
             errorMessage.classList.remove("hidden");
 
             return;
+
         }
 
 
         if (!Number.isInteger(quantity) || quantity < 0) {
 
             errorMessage.textContent =
-                "Quantity cannot be negative.";
+                "Quantity must be a whole number and cannot be negative.";
 
             errorMessage.classList.remove("hidden");
 
             return;
+
         }
 
 
-        const duplicate =
-            books.some(function(existingBook) {
+        // --------------------------------------------------
+        // Disable button
+        // --------------------------------------------------
 
-                if (Number(existingBook.id) === bookId) {
-                    return false;
-                }
+        updateButton.disabled = true;
 
-                return String(existingBook.isbn)
-                    .trim()
-                    .toLowerCase() === isbn.toLowerCase();
+        updateButton.textContent =
+            "Updating...";
+
+
+        try {
+
+            // --------------------------------------------------
+            // Send PUT request
+            // --------------------------------------------------
+
+            await request(`/books/${bookId}`, {
+
+                method: "PUT",
+
+                body: JSON.stringify({
+
+                    isbn: isbn,
+
+                    title: title,
+
+                    author: author,
+
+                    category: category,
+
+                    quantity: quantity,
+
+                    publishedYear:
+                        publishedYear === ""
+                            ? undefined
+                            : Number(publishedYear),
+
+                    description: description
+
+                })
+
             });
 
 
-        if (duplicate) {
+            successMessage.textContent =
+                "Book updated successfully.";
+
+            successMessage.classList.remove("hidden");
+
+
+            // --------------------------------------------------
+            // Redirect
+            // --------------------------------------------------
+
+            setTimeout(function () {
+
+                window.location.href =
+                    "books.html";
+
+            }, 1000);
+
+
+        } catch (error) {
 
             errorMessage.textContent =
-                "Another book already uses this ISBN.";
+                error.message || "Failed to update book.";
 
             errorMessage.classList.remove("hidden");
 
-            return;
+
+            updateButton.disabled = false;
+
+            updateButton.textContent =
+                "Update Book";
+
         }
 
-
-        books[bookIndex] = {
-
-            ...books[bookIndex],
-
-            isbn: isbn,
-            title: title,
-            author: author,
-            category: category,
-            publisher: publisher,
-            publicationYear: publicationYear,
-            quantity: quantity
-
-        };
-
-
-        localStorage.setItem(
-            "books",
-            JSON.stringify(books)
-        );
-
-
-        successMessage.textContent =
-            "Book updated successfully.";
-
-        successMessage.classList.remove("hidden");
-
-
-        setTimeout(function() {
-
-            window.location.href = "books.html";
-
-        }, 800);
-
     });
-}
 
 </script>
-<script src="js/auth.js"></script>
+```
+
 </body>
+
 </html>

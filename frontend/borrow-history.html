@@ -1,877 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Borrow History - Online Library</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
-
-
 <body class="bg-gray-100 min-h-screen">
 
-
-    <!-- ================================
-         NAVBAR
-    ================================= -->
-
-    <nav class="bg-white shadow-md">
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-
-            <div class="flex flex-col sm:flex-row
-                        items-center justify-between gap-4">
-
-                <a
-                    href="index.html"
-                    class="flex items-center gap-2">
-
-                    <span class="text-2xl">
-                        📚
-                    </span>
-
-                    <h1 class="text-xl font-bold text-gray-800">
-                        Online Library
-                    </h1>
-
-                </a>
-
-
-                <div class="flex flex-wrap
-                            justify-center
-                            items-center
-                            gap-4 sm:gap-6">
-
-                    <a
-                        href="index.html"
-                        class="text-gray-600 hover:text-blue-600">
-
-                        Dashboard
-
-                    </a>
-
-
-                    <a
-                        href="books.html"
-                        class="text-gray-600 hover:text-blue-600">
-
-                        Books
-
-                    </a>
-
-
-                    <a
-                        href="borrow.html"
-                        class="text-gray-600 hover:text-blue-600">
-
-                        Borrow
-
-                    </a>
-
-
-                    <a
-                        href="return-book.html"
-                        class="text-gray-600 hover:text-blue-600">
-
-                        Return
-
-                    </a>
-
-
-                    <a
-                        href="borrow-history.html"
-                        class="text-blue-600 font-semibold">
-
-                        History
-
-                    </a>
-
-
-                    <span
-                        id="userRole"
-                        class="text-gray-700 font-medium">
-
-                        Admin
-
-                    </span>
-
-
-                    <button
-                        type="button"
-                        onclick="logout()"
-                        class="text-red-600 hover:text-red-700 font-medium">
-
-                        Logout
-
-                    </button>
-
-                </div>
-
+<nav class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <a href="index.html" class="flex items-center gap-2">
+                <span class="text-2xl">📚</span>
+                <h1 class="text-xl font-bold text-gray-800">Online Library</h1>
+            </a>
+            <div class="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                <a href="books.html" class="text-gray-600 hover:text-blue-600">Books</a>
+                <a href="borrow.html" class="text-gray-600 hover:text-blue-600">Borrow</a>
+                <a href="return-book.html" class="text-gray-600 hover:text-blue-600">Return</a>
+                <a href="borrow-history.html" class="text-blue-600 font-semibold">History</a>
+                <span id="userRole" class="text-gray-700 font-medium">User</span>
+                <button type="button" id="logoutBtn" class="text-red-600 hover:text-red-700 font-medium">Logout</button>
             </div>
-
         </div>
+    </div>
+</nav>
 
-    </nav>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Borrow History</h2>
+        <p class="mt-2 text-gray-600">View all book borrowing and return records.</p>
+    </div>
 
-
-
-    <!-- ================================
-         MAIN
-    ================================= -->
-
-    <main
-        class="max-w-7xl mx-auto
-               px-4 sm:px-6
-               py-8 sm:py-10">
-
-
-        <!-- HEADING -->
-
-        <div class="mb-8">
-
-            <h2
-                class="text-2xl sm:text-3xl
-                       font-bold text-gray-800">
-
-                Borrow History
-
-            </h2>
-
-
-            <p class="mt-2 text-gray-600">
-
-                View all book borrowing and return records.
-
-            </p>
-
+    <!-- Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+        <div class="bg-white rounded-xl shadow-md p-5">
+            <p class="text-sm text-gray-500">Total Records</p>
+            <p id="totalRecords" class="text-2xl font-bold text-gray-800 mt-1">0</p>
         </div>
-
-
-
-        <!-- ================================
-             SUMMARY
-        ================================= -->
-
-        <div
-            class="grid grid-cols-1
-                   sm:grid-cols-2
-                   lg:grid-cols-4
-                   gap-5 mb-6">
-
-
-            <div
-                class="bg-white rounded-xl
-                       shadow-md p-5">
-
-                <p class="text-sm text-gray-500">
-                    Total Records
-                </p>
-
-                <p
-                    id="totalRecords"
-                    class="text-2xl font-bold
-                           text-gray-800 mt-1">
-
-                    0
-
-                </p>
-
-            </div>
-
-
-            <div
-                class="bg-white rounded-xl
-                       shadow-md p-5">
-
-                <p class="text-sm text-gray-500">
-                    Active Borrowed
-                </p>
-
-                <p
-                    id="activeRecords"
-                    class="text-2xl font-bold
-                           text-yellow-600 mt-1">
-
-                    0
-
-                </p>
-
-            </div>
-
-
-            <div
-                class="bg-white rounded-xl
-                       shadow-md p-5">
-
-                <p class="text-sm text-gray-500">
-                    Returned
-                </p>
-
-                <p
-                    id="returnedRecords"
-                    class="text-2xl font-bold
-                           text-green-600 mt-1">
-
-                    0
-
-                </p>
-
-            </div>
-
-
-            <div
-                class="bg-white rounded-xl
-                       shadow-md p-5">
-
-                <p class="text-sm text-gray-500">
-                    Total Fine
-                </p>
-
-                <p
-                    id="totalFine"
-                    class="text-2xl font-bold
-                           text-red-600 mt-1">
-
-                    ৳0
-
-                </p>
-
-            </div>
-
+        <div class="bg-white rounded-xl shadow-md p-5">
+            <p class="text-sm text-gray-500">Active Borrowed</p>
+            <p id="activeRecords" class="text-2xl font-bold text-yellow-600 mt-1">0</p>
         </div>
-
-
-
-        <!-- ================================
-             SEARCH
-        ================================= -->
-
-        <div
-            class="bg-white rounded-xl
-                   shadow-md p-5 mb-6">
-
-            <input
-                id="searchInput"
-                type="text"
-                placeholder="Search by book title or email..."
-                class="w-full border border-gray-300
-                       rounded-lg px-4 py-3
-                       focus:outline-none
-                       focus:ring-2
-                       focus:ring-blue-500">
-
+        <div class="bg-white rounded-xl shadow-md p-5">
+            <p class="text-sm text-gray-500">Returned</p>
+            <p id="returnedRecords" class="text-2xl font-bold text-green-600 mt-1">0</p>
         </div>
-
-
-
-        <!-- ================================
-             TABLE
-        ================================= -->
-
-        <div
-            class="bg-white rounded-xl
-                   shadow-md
-                   overflow-x-auto">
-
-            <table
-                class="w-full min-w-[1100px]">
-
-
-                <thead
-                    class="bg-gray-50">
-
-                    <tr>
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Book
-
-                        </th>
-
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Member
-
-                        </th>
-
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Borrowed At
-
-                        </th>
-
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Due Date
-
-                        </th>
-
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Status
-
-                        </th>
-
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Late Days
-
-                        </th>
-
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Fine
-
-                        </th>
-
-
-                        <th
-                            class="text-left px-5 py-4
-                                   text-sm font-semibold
-                                   text-gray-600">
-
-                            Returned At
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody
-                    id="historyTable"
-                    class="divide-y divide-gray-200">
-
-                </tbody>
-
-            </table>
-
+        <div class="bg-white rounded-xl shadow-md p-5">
+            <p class="text-sm text-gray-500">Total Fine</p>
+            <p id="totalFine" class="text-2xl font-bold text-red-600 mt-1">৳0</p>
         </div>
+    </div>
 
+    <!-- Search -->
+    <div class="bg-white rounded-xl shadow-md p-5 mb-6">
+        <input id="searchInput" type="text" placeholder="Search by book title or member email..."
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
 
-    </main>
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-md overflow-x-auto">
+        <table class="w-full min-w-[1100px]">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Book</th>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Member</th>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Borrowed At</th>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Due Date</th>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Status</th>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Late Days</th>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Fine</th>
+                    <th class="text-left px-5 py-4 text-sm font-semibold text-gray-600">Returned At</th>
+                </tr>
+            </thead>
+            <tbody id="historyTable" class="divide-y divide-gray-200"></tbody>
+        </table>
+    </div>
+</main>
 
+<script type="module">
+    import { getLoggedInUser, removeUser, request } from "./javascript/api.js";
 
+    const user = getLoggedInUser();
+    if (!user || !user.token) {
+        window.location.href = "login.html";
+        throw new Error("Not logged in");
+    }
 
-    <!-- AUTH -->
+    document.getElementById("userRole").textContent = user.role === "admin" ? "Admin" : "Member";
 
-    <script src="js/auth.js"></script>
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        removeUser();
+        window.location.href = "login.html";
+    });
 
+    let allRecords = [];
 
-    <script>
+    function escapeHTML(value) {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 
-        // ================================
-        // ADMIN ONLY
-        // ================================
+    function formatDate(dateString) {
+        if (!dateString) return "-";
+        return new Date(dateString).toLocaleString();
+    }
 
-        if (!protectAdminPage()) {
+    function displayHistory(recordList) {
+        const table = document.getElementById("historyTable");
+        table.innerHTML = "";
 
-            throw new Error("Admin access required");
+        // Stats
+        const total = allRecords.length;
+        const active = allRecords.filter(r => r.returned === false).length;
+        const returned = allRecords.filter(r => r.returned === true).length;
+        const fineTotal = allRecords.reduce((sum, r) => sum + (Number(r.fine) || 0), 0);
 
+        document.getElementById("totalRecords").textContent = total;
+        document.getElementById("activeRecords").textContent = active;
+        document.getElementById("returnedRecords").textContent = returned;
+        document.getElementById("totalFine").textContent = "৳" + fineTotal;
+
+        if (recordList.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="8" class="px-5 py-10 text-center text-gray-500">
+                        No borrowing records found.
+                    </td>
+                </tr>`;
+            return;
         }
 
+        recordList.forEach(record => {
+            const book = record.book || {};
+            const member = record.user || {};
+            const isReturned = record.returned === true;
+            const fine = Number(record.fine) || 0;
+            const lateDays = Number(record.lateDays) || 0;
 
-        showUserInfo("userRole");
+            const statusHTML = isReturned
+                ? `<span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">Returned</span>`
+                : `<span class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium">Borrowed</span>`;
 
+            const fineHTML = fine > 0
+                ? `<span class="font-bold text-red-600">৳${fine}</span>`
+                : `<span class="text-green-600 font-medium">৳0</span>`;
 
+            const row = document.createElement("tr");
+            row.className = "hover:bg-gray-50";
+            row.innerHTML = `
+                <td class="px-5 py-4">
+                    <div class="font-semibold text-gray-800">${escapeHTML(book.title || "-")}</div>
+                    <div class="text-sm text-gray-500">${escapeHTML(book.author || "")}</div>
+                </td>
+                <td class="px-5 py-4">
+                    <div class="text-gray-700">${escapeHTML(member.name || "-")}</div>
+                    <div class="text-sm text-gray-500">${escapeHTML(member.email || "")}</div>
+                </td>
+                <td class="px-5 py-4 text-gray-600">${formatDate(record.borrowedAt)}</td>
+                <td class="px-5 py-4 text-gray-600">${formatDate(record.dueDate)}</td>
+                <td class="px-5 py-4">${statusHTML}</td>
+                <td class="px-5 py-4">
+                    ${lateDays > 0
+                        ? `<span class="font-semibold text-red-600">${lateDays} day(s)</span>`
+                        : `<span class="text-green-600">0</span>`}
+                </td>
+                <td class="px-5 py-4">${fineHTML}</td>
+                <td class="px-5 py-4 text-gray-600">${formatDate(record.returnedAt)}</td>
+            `;
+            table.appendChild(row);
+        });
+    }
 
-        // ================================
-        // GET RECORDS
-        // ================================
+    async function loadHistory() {
+        try {
+            // Admin sees all records, Member sees only their own
+            const endpoint = user.role === "admin" ? "/borrow" : "/borrow/my";
+            const data = await request(endpoint);
 
-        let borrowedBooks =
-            JSON.parse(
-                localStorage.getItem(
-                    "borrowedBooks"
-                )
-            ) || [];
+            allRecords = Array.isArray(data) ? data : [];
+            displayHistory(allRecords);
 
-
-
-        // ================================
-        // FORMAT
-        // ================================
-
-        function escapeHTML(value) {
-
-            return String(value)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-
+        } catch (err) {
+            console.error(err);
+            document.getElementById("historyTable").innerHTML = `
+                <tr>
+                    <td colspan="8" class="px-5 py-10 text-center text-red-500">
+                        Failed to load history.
+                    </td>
+                </tr>`;
         }
-
-
-
-        // ================================
-        // GET FINE
-        // ================================
-
-        function getRecordFine(record) {
-
-            return Number(
-                record.fine
-            ) || 0;
-
-        }
-
-
-
-        // ================================
-        // DISPLAY
-        // ================================
-
-        function displayHistory(recordList) {
-
-            const table =
-                document.getElementById(
-                    "historyTable"
-                );
-
-
-            table.innerHTML = "";
-
-
-            // ================================
-            // SUMMARY
-            // ================================
-
-            const total =
-                borrowedBooks.length;
-
-
-            const active =
-                borrowedBooks.filter(
-                    function(record) {
-
-                        return record.returned !== true;
-
-                    }
-                ).length;
-
-
-            const returned =
-                borrowedBooks.filter(
-                    function(record) {
-
-                        return record.returned === true;
-
-                    }
-                ).length;
-
-
-            const fineTotal =
-                borrowedBooks.reduce(
-                    function(sum, record) {
-
-                        return sum +
-                            getRecordFine(record);
-
-                    },
-                    0
-                );
-
-
-            document.getElementById(
-                "totalRecords"
-            ).textContent = total;
-
-
-            document.getElementById(
-                "activeRecords"
-            ).textContent = active;
-
-
-            document.getElementById(
-                "returnedRecords"
-            ).textContent = returned;
-
-
-            document.getElementById(
-                "totalFine"
-            ).textContent =
-                "৳" + fineTotal;
-
-
-
-            // ================================
-            // EMPTY
-            // ================================
-
-            if (recordList.length === 0) {
-
-                table.innerHTML = `
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            class="px-5 py-10
-                                   text-center
-                                   text-gray-500">
-
-                            No borrowing records found.
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-                return;
-
-            }
-
-
-
-            // ================================
-            // ROWS
-            // ================================
-
-            recordList.forEach(
-                function(record) {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-
-                    row.className =
-                        "hover:bg-gray-50";
-
-
-                    const returned =
-                        record.returned === true;
-
-
-                    const fine =
-                        getRecordFine(record);
-
-
-                    const lateDays =
-                        Number(
-                            record.lateDays
-                        ) || 0;
-
-
-
-                    // ================================
-                    // STATUS
-                    // ================================
-
-                    let statusHTML = "";
-
-
-                    if (returned) {
-
-                        statusHTML = `
-
-                            <span
-                                class="inline-block
-                                       bg-green-100
-                                       text-green-700
-                                       px-3 py-1
-                                       rounded-full
-                                       text-sm
-                                       font-medium">
-
-                                Returned
-
-                            </span>
-
-                        `;
-
-                    } else {
-
-                        statusHTML = `
-
-                            <span
-                                class="inline-block
-                                       bg-yellow-100
-                                       text-yellow-700
-                                       px-3 py-1
-                                       rounded-full
-                                       text-sm
-                                       font-medium">
-
-                                Borrowed
-
-                            </span>
-
-                        `;
-
-                    }
-
-
-
-                    // ================================
-                    // FINE HTML
-                    // ================================
-
-                    let fineHTML = "";
-
-
-                    if (fine > 0) {
-
-                        fineHTML = `
-
-                            <span
-                                class="font-bold
-                                       text-red-600">
-
-                                ৳${fine}
-
-                            </span>
-
-                        `;
-
-                    } else {
-
-                        fineHTML = `
-
-                            <span
-                                class="text-green-600
-                                       font-medium">
-
-                                ৳0
-
-                            </span>
-
-                        `;
-
-                    }
-
-
-
-                    // ================================
-                    // ROW
-                    // ================================
-
-                    row.innerHTML = `
-
-                        <td
-                            class="px-5 py-4">
-
-                            <div
-                                class="font-semibold
-                                       text-gray-800">
-
-                                ${escapeHTML(
-                                    record.bookTitle || "-"
-                                )}
-
-                            </div>
-
-                        </td>
-
-
-                        <td
-                            class="px-5 py-4">
-
-                            <span
-                                class="text-gray-700">
-
-                                ${escapeHTML(
-                                    record.userEmail || "-"
-                                )}
-
-                            </span>
-
-                        </td>
-
-
-                        <td
-                            class="px-5 py-4
-                                   text-gray-600">
-
-                            ${escapeHTML(
-                                record.borrowedAt || "-"
-                            )}
-
-                        </td>
-
-
-                        <td
-                            class="px-5 py-4
-                                   text-gray-600">
-
-                            ${escapeHTML(
-                                record.dueDate || "-"
-                            )}
-
-                        </td>
-
-
-                        <td
-                            class="px-5 py-4">
-
-                            ${statusHTML}
-
-                        </td>
-
-
-                        <td
-                            class="px-5 py-4">
-
-                            ${
-                                lateDays > 0
-
-                                ? `
-
-                                    <span
-                                        class="font-semibold
-                                               text-red-600">
-
-                                        ${lateDays} day(s)
-
-                                    </span>
-
-                                `
-
-                                : `
-
-                                    <span
-                                        class="text-green-600">
-
-                                        0
-
-                                    </span>
-
-                                `
-                            }
-
-                        </td>
-
-
-                        <td
-                            class="px-5 py-4">
-
-                            ${fineHTML}
-
-                        </td>
-
-
-                        <td
-                            class="px-5 py-4
-                                   text-gray-600">
-
-                            ${escapeHTML(
-                                record.returnedAt || "-"
-                            )}
-
-                        </td>
-
-                    `;
-
-
-                    table.appendChild(row);
-
-                }
-            );
-
-        }
-
-
-
-        // ================================
-        // SEARCH
-        // ================================
-
-        document
-            .getElementById("searchInput")
-            .addEventListener(
-                "input",
-                function() {
-
-                    const search =
-                        this.value
-                            .toLowerCase()
-                            .trim();
-
-
-                    const filtered =
-                        borrowedBooks.filter(
-                            function(record) {
-
-                                return (
-
-                                    String(
-                                        record.bookTitle || ""
-                                    )
-                                    .toLowerCase()
-                                    .includes(search)
-
-                                    ||
-
-                                    String(
-                                        record.userEmail || ""
-                                    )
-                                    .toLowerCase()
-                                    .includes(search)
-
-                                );
-
-                            }
-                        );
-
-
-                    displayHistory(filtered);
-
-                }
-            );
-
-
-
-        // ================================
-        // INITIAL
-        // ================================
-
-        displayHistory(
-            borrowedBooks
-        );
-
-    </script>
-
-
+    }
+
+    // Search
+    document.getElementById("searchInput").addEventListener("input", function () {
+        const search = this.value.toLowerCase().trim();
+        const filtered = allRecords.filter(record => {
+            const bookTitle = (record.book?.title || "").toLowerCase();
+            const memberEmail = (record.user?.email || "").toLowerCase();
+            const memberName = (record.user?.name || "").toLowerCase();
+            return bookTitle.includes(search) || memberEmail.includes(search) || memberName.includes(search);
+        });
+        displayHistory(filtered);
+    });
+
+    // Start
+    loadHistory();
+</script>
 </body>
-
 </html>

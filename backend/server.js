@@ -20,7 +20,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/books", require("./routes/bookRoutes"));
 app.use("/api/members", require("./routes/memberRoutes"));
 app.use("/api/issues", require("./routes/issueRoutes"));
-
+app.use("/api/borrow", require("./routes/borrowRoutes"));
 app.use(errorHandler);
 
 const PORT = Number(process.env.PORT) || 5000;

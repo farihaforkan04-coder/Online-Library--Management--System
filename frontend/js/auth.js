@@ -213,25 +213,25 @@ function logout() {
 // PROTECT NORMAL PAGE
 // ================================
 
-function protectPage() {
+// function protectPage() {
 
-    const user =
-        getCurrentUser();
-
-
-    if (!user) {
-
-        window.location.href =
-            "login.html";
-
-        return false;
-
-    }
+//     const user =
+//         getCurrentUser();
 
 
-    return true;
+//     if (!user) {
 
-}
+//         window.location.href =
+//             "login.html";
+
+//         return false;
+
+//     }
+
+
+//     return true;
+
+// }
 
 
 // ================================
