@@ -28,8 +28,8 @@ const PORT = Number(process.env.PORT) || 5000;
 console.log("PORT value is:", PORT);        
 console.log("Type of PORT:", typeof PORT);
 
-const server = app.listen(PORT, "127.0.0.1", () => {
-  console.log(` Server is really listening on http://127.0.0.1:${PORT}`);
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(` Server is really listening on http://0.0.0.0:${PORT}`);
 });
 
 server.on("error", (err) => {
